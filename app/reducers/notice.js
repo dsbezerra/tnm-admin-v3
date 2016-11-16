@@ -1,20 +1,29 @@
 
 import {
   NOTICE_ACTION_CHANGE,
+
+  INSERT_NOTICE_REQUEST_AGENCY_SEARCH,
+  INSERT_NOTICE_RECEIVE_AGENCY_SEARCH,
+  INSERT_NOTICE_AGENCY_SEARCH_CLEAR,
+  
   SEARCH_NOTICE_FILTER_CHANGE,
   SEARCH_NOTICE_FILTER_APPLY,
   SEARCH_NOTICE_FILTER_CLEAR,
 } from '../constants/ActionTypes';
 
 const insertInitialState = {
-  modality: -1,
-  number: '',
-  segmentId: '',
-  agencyId: '',
-  amount: 0,
-  object: '',
-  exclusive: false,
-  date: '',  
+  isSearchingAgencies: false,
+  agencies: [],
+  notice: {
+    modality: -1,
+    number: '',
+    segmentId: '',
+    agencyId: '',
+    amount: 0,
+    object: '',
+    exclusive: false,
+    date: '', 
+  }
 };
 
 const searchInitialState = {
@@ -40,6 +49,39 @@ const initialState = {
   insert: insertInitialState,
   search: searchInitialState,
 };
+
+const insert = (state = insertInitialState, action) => {
+  switch(action.type) {
+    case INSERT_NOTICE_REQUEST_AGENCY_SEARCH:
+      return {
+        ...state,
+        insert: {
+          ...state.insert,
+          isSearchingAgencies: true,
+        }
+      }
+
+    case INSERT_NOTICE_RECEIVE_AGENCY_SEARCH:
+      return {
+        ...state,
+        insert: {
+          ...state.insert,
+          agencies: action.agencies,
+          isSearchingAgencies: false,
+        }
+      }
+
+    case INSERT_NOTICE_AGENCY_SEARCH_CLEAR:
+      return {
+        ...state,
+        insert: {
+          ...state.insert,
+          agencies: [],
+          isSearchingAgencies: false,
+        }
+      }
+  }
+}
 
 const search = (state = searchInitialState, action) => {
   switch(action.type) {
@@ -86,6 +128,11 @@ const notice = (state = initialState, action) => {
         action: action.action,
       }
 
+    case INSERT_NOTICE_REQUEST_AGENCY_SEARCH:
+    case INSERT_NOTICE_RECEIVE_AGENCY_SEARCH:
+    case INSERT_NOTICE_AGENCY_SEARCH_CLEAR:
+      return insert(state, action);
+      
     case SEARCH_NOTICE_FILTER_CHANGE:
     case SEARCH_NOTICE_FILTER_APPLY:
     case SEARCH_NOTICE_FILTER_CLEAR:

@@ -5,25 +5,28 @@ import { connect } from 'react-redux';
 import VelocityComponent from 'velocity-react/velocity-component';
 
 import { ModalityOptions } from '../../../data/notice';
+import * as noticeActions from '../../../actions/notice';
 
 import ActionList from '../../../components/ActionList';
 import TabLayout from '../../../components/TabLayout';
+import AgencyResultItem from '../../../components/Agency/AgencyResultItem';
 
 import { fetchSegments } from '../../../actions/segment';
 
 import {
   Button,
+  CheckBox,
   Divider,
   Form,
   Field,
   Fields,
   Header,
   Label,
-  TextField,
-  TextArea,
   Message,
+  TextArea,
+  TextField,
   Select,
-  CheckBox,
+  SearchableTextField,
 } from '../../../components/UI';
 
 import DropdownMenu from '../../../components/DropdownMenu';
@@ -40,6 +43,9 @@ class InsertNotice extends Component {
     this.onInsertConfirm = this.onInsertConfirm.bind(this);
     this.onInsert = this.onInsert.bind(this);
     this.onClear = this.onClear.bind(this);
+
+    this.onUpdateAgencySearch = this.onUpdateAgencySearch.bind(this);
+    this.onUpdateAgency = this.onUpdateAgency.bind(this);
   }
 
   componentDidMount() {
@@ -68,11 +74,45 @@ class InsertNotice extends Component {
   onExclusiveClick() {
 
   }
+
+  onUpdateAgency(agency) {
+    console.log(agency);
+  }
+
+  onUpdateAgencySearch(event) {    
+    const { target }  = event;
+    const size = target.value.length;
+    if(size >= 2) {
+      const filter = {
+        where: {
+          sigla: {
+            regexp: '^' + target.value.toLowerCase()
+          }
+        },
+        include: {
+          relation: 'cidades',
+          scope: {
+            include: {
+              relation: 'estados'
+            }
+          }
+        }
+      };
+      
+      this.props.searchAgencies(filter);
+    }
+    else {
+      this.props.clearSearchAgencies();
+    }
+    
+  }
   
   render() {
 
     const {
       segments,
+      agencies,
+      isSearchingAgencies,
       isFetchingSegments,
       isInserting,
     } = this.props;
@@ -82,6 +122,14 @@ class InsertNotice extends Component {
         id: segment.id,
         text: segment.descricao,
       }
+    });
+
+    const agencyList = _.map(agencies, (agency, i) => {
+      return <AgencyResultItem
+                 key={agency.id}
+                 item={agency}
+                 value={agency.nome}
+             />
     });
 
     return (
@@ -96,10 +144,16 @@ class InsertNotice extends Component {
 
           <Field>
             <Label text="Órgão" />
-            <TextField className="dark" />
+            <SearchableTextField className="dark"
+                                 isLoading={isSearchingAgencies}
+                                 onChange={this.onUpdateAgencySearch}
+                                 onItemClick={this.onUpdateAgency}
+            >
+              {agencyList}
+            </SearchableTextField>
           </Field>
 
-          <Fields num="two">
+          <Fields>
             <Field>
               <Label text="Segmento" />
               <DropdownMenu items={segmentList}
@@ -178,8 +232,15 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
 
+  const {
+    clearSearchAgencies,
+    searchAgencies,
+  } = noticeActions;
+  
   const actions = {
-    fetchSegments
+    fetchSegments,
+    searchAgencies,
+    clearSearchAgencies
   };
 
   return bindActionCreators(actions, dispatch);

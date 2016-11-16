@@ -6,6 +6,8 @@ import _ from 'lodash';
 import Icon from '../Icon';
 import TextField from './TextField';
 
+import SpinnerIcon from '../Icon/SpinnerIcon';
+
 class SearchableTextField extends Component {
 
   constructor(props) {
@@ -20,18 +22,18 @@ class SearchableTextField extends Component {
   }
 
   componentDidMount() {
-    const { results } = this.props;
-    if(results) {
+    const { children } = this.props;
+    if(children) {
       this.setState({
-        visible: results.length > 0
+        visible: children.length > 0
       })
     }
   }
 
   componentWillReceiveProps(nextProps) {
     let { visible } = this.state;
-    if(nextProps.results) {
-      visible = nextProps.results.length > 0;
+    if(nextProps.children) {
+      visible = nextProps.children.length > 0;
     }
     else {
       visible = false;
@@ -54,8 +56,8 @@ class SearchableTextField extends Component {
     });
   }
 
-  onItemClick(item) {
-
+  onItemClick(item, value) {
+    
     // Pass the clicked item to a parent component
     this.props.onItemClick && this.props.onItemClick(item);
     
@@ -67,13 +69,12 @@ class SearchableTextField extends Component {
       // is a TextField component
       const input = textfield.children[0];
       if(input) {
-        input.value = item[0];
+        input.value = value;
       }
     }
   }
 
   renderSearchResults() {
-    const { results } = this.props;
     const { visible, focused } = this.state;
 
     const animProps = {
@@ -87,11 +88,6 @@ class SearchableTextField extends Component {
       }
     };
 
-    const resultList = _.map(results, (item, index) => {
-      return <li key={index}
-                 onClick={this.onItemClick.bind(this, [item, index])}>{item}</li>;
-    }); 
-
     const show = focused && visible;
     
     return (
@@ -99,7 +95,13 @@ class SearchableTextField extends Component {
         { show ?
           <div className="tnm-textfield-search-results" ref="resultList">
             <ul>
-              {resultList}
+              {
+                React.Children.map(this.props.children, (child) => {
+                  return React.cloneElement(child, {
+                    onClick: this.onItemClick.bind(this, child.props.item, child.props.value)
+                  })
+                })
+              }
             </ul>
           </div> : null }
       </VelocityTransitionGroup>
@@ -110,7 +112,8 @@ class SearchableTextField extends Component {
     const {
       placeholder,
       icon,
-      customClass
+      customClass,
+      isLoading
     } = this.props;
     
     return (
@@ -122,7 +125,11 @@ class SearchableTextField extends Component {
                    onBlur={this.onBlur}
         />
 
-        <Icon name={icon ? icon : 'search'} onClick={this.props.onIconClick} />
+        { isLoading ?
+          <SpinnerIcon />
+        :
+          <Icon name={icon ? icon : 'search'} onClick={this.props.onIconClick} />
+        }
 
         {this.renderSearchResults()}
         

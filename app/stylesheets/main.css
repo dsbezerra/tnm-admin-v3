@@ -1,9 +1,144 @@
-* {
-  font-family: Roboto, Arial, sans-serif;
-  padding: 0;
+/*! Copyright (c) 2016 TáNaMão Licitações.  All Rights Reserved. */
+
+@charset "UTF-8";
+*,
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd {
   margin: 0;
+  padding: 0;
   border: 0;
+  font-size: 100%;
+  font: inherit;
+  font-family: Roboto, Arial, sans-serif;
+  outline: none;
   -webkit-font-smoothing: antialiased;
+}
+ol,
+ul {
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  outline: none;
+  vertical-align: baseline;
+}
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  outline: none;
+}
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+body {
+  line-height: 1;
+}
+ol,
+ul {
+  list-style: none;
+}
+blockquote,
+q {
+  quotes: none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: '';
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
 }
 
 #app, .app-two, .app-main {
@@ -1453,7 +1588,6 @@ nav {
   margin: 0% 2% 2% 0%;
 }
 
-
 /*** FORM STYLES ***/
 /* Agency Name */
 .tnm-form .field.agency-name {
@@ -1857,13 +1991,17 @@ nav {
   color: #ff6600;
 }
 
-
-
 /**
  * UI/TextField/SearchableTextField
  */
 .tnm-textfield-search {
   position: relative;
+}
+
+.tnm-textfield-search .spinner {
+  position: absolute;
+  top: 7px;
+  right: 10px;
 }
 
 .tnm-textfield-search .tnm-textfield {
@@ -1884,21 +2022,22 @@ nav {
 }
 
 .tnm-textfield-search:focus > i:hover {
-  color: #ff6600;
+  color: #ff9800;
 }
 
 .tnm-textfield-search .tnm-textfield-search-results {
   background-color: #181818;
   width: 100%;
   box-sizing: border-box;
-  border-right: 1px solid #ff6600;
-  border-left: 1px solid #ff6600;  
-  border-bottom: 1px solid #ff6600;
+  border-radius: 3px;
+  border-right: 1px solid #373737;
+  border-left: 1px solid #373737;  
+  border-bottom: 1px solid #373737;
   max-height: 300px;
   overflow-y: auto;
   -webkit-transform-origin: top;
   transform-origin: top;
-  z-index: 10;
+  z-index: 3;
   position: absolute;
 }
 
@@ -1907,22 +2046,33 @@ nav {
   text-transform: uppercase;
 }
 
-.tnm-textfield-search-results > ul > li {
-  font-size: 16px;
-  height: 40px;
-  padding-left: 20px;
-  padding-right: 20px;
-  line-height: 40px;
+.tnm-agency-result-item {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.4);
+  min-height: 60px;
+  padding-left: 10px;
+  padding-right: 10px;
+  line-height: 1;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.tnm-agency-result-item .tnm-agency-content {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  color: #fff;
 }
 
-.tnm-textfield-search-results > ul > li:hover {
-  background-color: #202020;
+.tnm-agency-result-item .tnm-agency-location {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.tnm-agency-result-item:hover {
   cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
 .tnm-textfield-search-scrollbar {
@@ -2989,10 +3139,6 @@ nav {
 
 .tnm-textfield-search .tnm-textfield.dark:hover + .tnm-icon {
   color: #888;
-}
-
-.tnm-textfield-search {
-  padding: 0px 6px;
 }
 
 .tnm-textarea.dark {
