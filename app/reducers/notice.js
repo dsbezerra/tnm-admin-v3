@@ -2,6 +2,11 @@
 import {
   NOTICE_ACTION_CHANGE,
 
+  REQUEST_NOTICES,
+  REQUEST_NOTICES_COUNT,
+  RECEIVE_NOTICES,
+  RECEIVE_NOTICES_COUNT,
+
   INSERT_NOTICE_REQUEST_AGENCY_SEARCH,
   INSERT_NOTICE_RECEIVE_AGENCY_SEARCH,
   INSERT_NOTICE_AGENCY_SEARCH_CLEAR,
@@ -9,6 +14,8 @@ import {
   SEARCH_NOTICE_FILTER_CHANGE,
   SEARCH_NOTICE_FILTER_APPLY,
   SEARCH_NOTICE_FILTER_CLEAR,
+  SEARCH_NOTICE_PAGINATION_CHANGE,
+  
 } from '../constants/ActionTypes';
 
 const insertInitialState = {
@@ -28,6 +35,10 @@ const insertInitialState = {
 
 const searchInitialState = {
   isFiltering: false,
+  sort: 'data',
+  pagination: {
+    current: 0
+  },
   filter: {
     modality: -1,
     number: '',
@@ -37,11 +48,11 @@ const searchInitialState = {
     object: '',
     startDate: '',
     endDate: '',
-  }
+  },
 }
 
 const initialState = {
-  notices: [],
+  list: [],
   numNotices: 0,
   action: 'insert',
   isFetching: false,
@@ -116,6 +127,15 @@ const search = (state = searchInitialState, action) => {
           isFiltering: false,
         }
       }
+
+    case SEARCH_NOTICE_PAGINATION_CHANGE:
+      return {
+        ...state,
+        search: {
+          ...state.search,
+          pagination: action.pagination,
+        }
+      }
   }
 }
 
@@ -128,6 +148,20 @@ const notice = (state = initialState, action) => {
         action: action.action,
       }
 
+    case REQUEST_NOTICES:
+      return {
+        ...state,
+        isFetching: true,
+      }
+
+    case RECEIVE_NOTICES:
+      return {
+        ...state,
+        list: action.notices,
+        numNotices: action.notices.length,
+        isFetching: false,
+      }
+
     case INSERT_NOTICE_REQUEST_AGENCY_SEARCH:
     case INSERT_NOTICE_RECEIVE_AGENCY_SEARCH:
     case INSERT_NOTICE_AGENCY_SEARCH_CLEAR:
@@ -136,6 +170,7 @@ const notice = (state = initialState, action) => {
     case SEARCH_NOTICE_FILTER_CHANGE:
     case SEARCH_NOTICE_FILTER_APPLY:
     case SEARCH_NOTICE_FILTER_CLEAR:
+    case SEARCH_NOTICE_PAGINATION_CHANGE:
       return search(state, action);
       
     default:

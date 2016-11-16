@@ -2,7 +2,7 @@ import { api } from '../config/secrets';
 import request from 'request';
 
 const MODEL = {
-  Bidding: '/editais',
+  Notice: '/editais',
   Segment: '/segmentos',
   Agency: '/orgaos',
   City: '/cidades',

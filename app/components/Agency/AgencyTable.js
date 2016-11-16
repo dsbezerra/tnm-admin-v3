@@ -51,6 +51,7 @@ function AgencyTable(props) {
 
   let sortedList = agencies;
   if(sort) {
+    /* Move this to a Utils function */
     sortedList = _.sortBy(agencies, [function(a) {
       const dotIndex = sort.indexOf('.');
       if(dotIndex > -1) {
@@ -86,7 +87,7 @@ function AgencyTable(props) {
   
   return (
     <HorizontalScroller>
-      <Table className="tnm-table">
+      <Table>
         <TableHead>
           <TableRow>
             {renderHeader(props, headers)}

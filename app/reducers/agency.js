@@ -10,7 +10,7 @@ import {
   EDIT_AGENCY_INITIALS_CHANGE,
   EDIT_AGENCY_CITY_CHANGE,
   SEARCH_AGENCY_SORT_CHANGE,
-  SEARCH_PAGINATION_CHANGE,
+  SEARCH_AGENCY_PAGINATION_CHANGE,
   RECEIVE_AGENCIES,
   RECEIVE_AGENCIES_COUNT,
   REQUEST_AGENCIES,
@@ -96,7 +96,7 @@ const search = (state = searchInitialState, action) => {
         }
       }
 
-    case SEARCH_PAGINATION_CHANGE:
+    case SEARCH_AGENCY_PAGINATION_CHANGE:
       return {
         ...state,
         search: {
@@ -231,7 +231,7 @@ const agency = (state = initialState, action) => {
       return edit(state, action);
       
     case SEARCH_AGENCY_SORT_CHANGE:
-    case SEARCH_PAGINATION_CHANGE:
+    case SEARCH_AGENCY_PAGINATION_CHANGE:
       return search(state, action);
       
     default:

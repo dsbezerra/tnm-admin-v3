@@ -73,3 +73,12 @@ const addZero = (i) => {
   return i;
 }
 
+
+export const getModalityName = (modality) => {
+  if(modality >= 0 && modality < MODALITIES.length)
+    return MODALITIES[modality];
+  else if(typeof modality === 'undefined')
+    return 'Indisponível'
+  else
+    throw new Error('Invalid modality number!');
+}

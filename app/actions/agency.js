@@ -10,7 +10,7 @@ import {
   EDIT_AGENCY_INITIALS_CHANGE,
   EDIT_AGENCY_CITY_CHANGE,
   SEARCH_AGENCY_SORT_CHANGE,
-  SEARCH_PAGINATION_CHANGE,
+  SEARCH_AGENCY_PAGINATION_CHANGE,
   REQUEST_AGENCIES,
   REQUEST_AGENCIES_COUNT,
   RECEIVE_AGENCIES,
@@ -26,7 +26,7 @@ export function searchSortChange(sort) {
 
 export function onPaginationChange(pagination) {
   return {
-    type: SEARCH_PAGINATION_CHANGE,
+    type: SEARCH_AGENCY_PAGINATION_CHANGE,
     pagination
   }
 }
