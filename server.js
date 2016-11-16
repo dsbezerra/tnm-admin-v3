@@ -21,7 +21,7 @@ import * as plivoController from './controllers/plivo';
 
 import {
   agencies,
-  biddings,
+  notices,
   segments,
   locations
 } from './routes';
@@ -88,7 +88,7 @@ app.use((req, res, next) => {
 
 // Routes
 app.use('/agencies', agencies);
-app.use('/biddings', biddings);
+app.use('/notices', notices);
 app.use('/segments', segments);
 app.use('/locations', locations);
 

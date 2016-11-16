@@ -1,4 +1,4 @@
 export agencies from './agency';
-export biddings from './bidding';
+export notices from './notice';
 export segments from './segment';
 export locations from './location';
