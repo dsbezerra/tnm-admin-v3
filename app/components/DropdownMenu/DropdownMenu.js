@@ -29,20 +29,36 @@ class DropdownMenu extends Component {
     this.toggleItemsVisibility = this.toggleItemsVisibility.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
-    if(this.props.isLoading && !nextProps.isLoading) {
+  componentDidMount() {
+    document.documentElement.addEventListener('click', this.onDocumentClick);
+
+    const { selected } = this.props;
+    if(selected) {
       this.setState({
-        selected: ''
+        selected,
       });
     }
   }
 
-  componentDidMount() {
-    document.documentElement.addEventListener('click', this.onDocumentClick);
-  }
-
   componentWillUnmount() {
     document.documentElement.removeEventListener('click', this.onDocumentClick);
+  }
+
+  componentWillReceiveProps(nextProps) {
+
+    const { selected, isLoading } = this.props;
+    
+    if(isLoading && !nextProps.isLoading) {
+      this.setState({
+        selected: ''
+      });
+    }
+
+    if(selected != nextProps.selected) {
+      this.setState({
+        selected: nextProps.selected
+      });
+    }
   }
 
   onDocumentClick(event) {    

@@ -15,6 +15,9 @@ import {
   SEARCH_NOTICE_FILTER_APPLY,
   SEARCH_NOTICE_FILTER_CLEAR,
   SEARCH_NOTICE_PAGINATION_CHANGE,
+  SEARCH_NOTICE_SELECTED_CHANGE,
+
+  EDIT_NOTICE_SET,
   
 } from '../constants/ActionTypes';
 
@@ -36,6 +39,7 @@ const insertInitialState = {
 const searchInitialState = {
   isFiltering: false,
   sort: 'data',
+  selected: {},
   pagination: {
     current: 0
   },
@@ -51,14 +55,22 @@ const searchInitialState = {
   },
 }
 
+const editInitialState = {
+  notice: {
+    original: {},
+    edited: {},
+  }
+}
+
 const initialState = {
   list: [],
   numNotices: 0,
-  action: 'insert',
+  action: 'search',
   isFetching: false,
   isFetchingCount: false,
   insert: insertInitialState,
   search: searchInitialState,
+  edit: editInitialState,
 };
 
 const insert = (state = insertInitialState, action) => {
@@ -136,6 +148,32 @@ const search = (state = searchInitialState, action) => {
           pagination: action.pagination,
         }
       }
+
+    case SEARCH_NOTICE_SELECTED_CHANGE:
+      return {
+        ...state,
+        search: {
+          ...state.search,
+          selected: action.selected,
+        }
+      }
+  }
+}
+
+const edit = (state = editInitialState, action) => {
+  switch(action.type) {
+    case EDIT_NOTICE_SET:
+      return {
+        ...state,
+        edit: {
+          ...state.edit,
+          notice: {
+            ...state.edit.notice,
+            original: action.notice,
+            edited: action.notice,
+          }
+        }
+      }
   }
 }
 
@@ -171,7 +209,11 @@ const notice = (state = initialState, action) => {
     case SEARCH_NOTICE_FILTER_APPLY:
     case SEARCH_NOTICE_FILTER_CLEAR:
     case SEARCH_NOTICE_PAGINATION_CHANGE:
+    case SEARCH_NOTICE_SELECTED_CHANGE:
       return search(state, action);
+
+    case EDIT_NOTICE_SET:
+      return edit(state, action);
       
     default:
       return state;

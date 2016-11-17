@@ -12,6 +12,24 @@ class Select extends Component {
     }
   }
 
+  componentDidMount() {
+    const { active } = this.props;
+    if(active) {
+      this.setState({
+        active,
+      });
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { active } = this.props;
+    if(active != nextProps.active) {
+      this.setState({
+        active: nextProps.active,
+      });
+    }
+  }
+
   setActive(index) {
 
     const { active } = this.state;

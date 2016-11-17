@@ -78,8 +78,12 @@ function AgencyTable(props) {
         <TableCell text={agency.cidades.nome} />
         <TableCell text={agency.cidades.estados.nome} />
         <TableCell>
-          <Icon className="clickable" name="mode_edit" onClick={props.onEdit.bind(this, agency)} />
-          <Icon className="clickable" name="delete" onClick={props.onDelete.bind(this, agency)}/>
+          <Icon className="clickable"
+                name="mode_edit"
+                onClick={props.onEdit.bind(this, agency)} />
+          <Icon className="clickable"
+                name="delete"
+                onClick={props.onDelete.bind(this, agency)}/>
         </TableCell>
       </TableRow>
     );

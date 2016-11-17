@@ -1,13 +1,26 @@
 import React, { Component } from 'react';
+import _ from 'lodash';
+import VelocityComponent from 'velocity-react/velocity-component';
+import VelocityTransitionGroup from 'velocity-react/velocity-transition-group';
+
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 
 import { ModalityOptions } from '../../../data/notice';
+import {
+  formatAmount,
+  formatAgency,
+  formatDate,
+  getModalityName
+} from '../../../utils/NoticeUtils';
 
+import { showModalWithComponent, closeModal } from '../../../actions/modal';
 import { fetchSegments } from '../../../actions/segment';
 import * as noticeActions from '../../../actions/notice';
 
 import {
+  Button,
   CircularLoader,
   Divider,
   Grid,
@@ -29,9 +42,13 @@ import FilterGroup from '../../../components/Filter/FilterGroup';
 import FilterField from '../../../components/Filter/FilterField';
 import FilterButtons from '../../../components/Filter/FilterButtons';
 
+import ConfirmationModal from '../../../components/Modal/ConfirmationModal';
 import DropdownMenu from '../../../components/DropdownMenu';
 
 import NoticeTable from '../../../components/Notice/NoticeTable';
+import RightDrawer from '../../../components/Drawer/RightDrawer';
+
+import DeleteNotice from './DeleteNotice';
 
 class SearchNotice extends Component {
 
@@ -40,6 +57,10 @@ class SearchNotice extends Component {
     this.state = {
       reset: false,
     }
+    
+    this.onDrawerClose = this.onDrawerClose.bind(this);
+
+    this.onItemClick = this.onItemClick.bind(this);
     this.onPageClick = this.onPageClick.bind(this);
     this.onDeleteConfirm = this.onDeleteConfirm.bind(this);
     this.onApplyFilter = this.onApplyFilter.bind(this);
@@ -59,11 +80,30 @@ class SearchNotice extends Component {
     }
 
     if(notices && notices.length === 0) {
-      fetchNotices({ order: 'data DESC' });
+      fetchNotices({
+        order: 'data DESC',
+        limit: 20,
+        include: ['segmentos', {
+          relation: 'orgaos',
+          scope: {
+            include: {
+              relation: 'cidades',
+              scope: {
+                include: 'estados'
+              }
+            }
+          }
+        }]
+      });
     }
   }
   
-  onDeleteConfirm() {}
+  onDeleteConfirm(notice) {
+    // TODO(diego): Request deleteNoticeById
+    console.log(notice);
+    const { closeModal } = this.props;
+    closeModal();
+  }
 
   onApplyFilter() {
 
@@ -105,6 +145,45 @@ class SearchNotice extends Component {
       newPagination.current = page;
 
     onSearchPaginationChange(newPagination);
+  }
+
+  onItemClick(notice) {
+    const { onSelectedSearchChange } = this.props;
+    onSelectedSearchChange(notice);
+  }
+
+  onDelete(notice, event) {
+    // Stop propagation to avoid firing TableRow click event
+    event.stopPropagation();
+
+    // Show modal with options here
+    const { showModalWithComponent, closeModal } = this.props;
+    showModalWithComponent(
+      <ConfirmationModal title="Confirmação de Remoção"
+                         onConfirm={() => { this.onDeleteConfirm(notice) }}
+                         onCancel={closeModal}
+      >
+        <DeleteNotice notice={notice} />
+      </ConfirmationModal>
+    );
+  }
+  
+  onEdit(notice, event) {
+
+    // Stop propagation to avoid firing TableRow click event
+    if(event)
+      event.stopPropagation();
+    
+    const { onEditNoticeSet, router } = this.props;
+    if(notice && onEditNoticeSet && router) {
+      onEditNoticeSet(notice);
+      router.push('/forms/notice/edit/' + notice.id);
+    }
+  }
+
+  onDrawerClose() {
+    const { onSelectedSearchChange } = this.props;
+    onSelectedSearchChange({});
   }
 
   renderFilter() {
@@ -254,6 +333,7 @@ class SearchNotice extends Component {
 
     const {
       notices,
+      selected,
       isFetchingNotices,
       pagination,
     } = this.props;
@@ -270,6 +350,36 @@ class SearchNotice extends Component {
     for(let i = start; i < end; ++i) {
       noticesList.push(notices[i]);
     }
+
+    const drawerAnimationProps = {
+      component: 'div',
+      animation: {
+        translateX: !_.isEmpty(selected) ? '0%' : '100%',
+        opacity: !_.isEmpty(selected) ? 1 : 0
+      },
+      duration: 200,
+      runOnMount: false,
+    }
+
+    const itemAnimationProps = {
+      component: 'div',
+      enter: {
+        animation: {
+          opacity: [1, 0],
+          translateY: ['0%', '-20%']
+        },
+        duration: 400,
+        delay: 200,
+        easing: 'ease-in-out',
+      },
+      leave: {
+        animation: {
+          opacity: 0,
+        },
+        duration: 200,
+        easing: 'ease-in-out',
+      }
+    };
     
     return (
       <div className="tnm-main-content">
@@ -287,11 +397,134 @@ class SearchNotice extends Component {
             <NoticeTable notices={noticesList}
                          sort="modality"
                          onHeaderClick={this.onUpdateSort}
+                         onItemClick={this.onItemClick}
+                         onEdit={this.onEdit.bind(this)}
+                         onDelete={this.onDelete.bind(this)}
             />
           }
             {this.renderPagination()}
         </div>
-        
+
+        <VelocityComponent {...drawerAnimationProps}>
+          <RightDrawer header="Detalhes da Licitação" onDrawerClose={this.onDrawerClose}>
+            <Divider />
+            <div className="drawer-content">
+
+              <VelocityTransitionGroup {...itemAnimationProps}>
+                { !_.isEmpty(selected) ?
+                  <div className="item-group">
+                    <div className="item">
+                      <div className="item-header">ID da Licitação</div>
+                      <div className="item-value">{selected.id}</div>
+                    </div> 
+
+                    <div className="item">
+                      <Button type="primary"
+                              color="red"
+                              text="DELETAR"
+                              onClick={this.onDelete.bind(this, selected)}
+                      />
+                    </div>
+
+                    <div className="item">
+                      <Button type="secondary"
+                              color="blue"
+                              text="EDITAR"
+                              onClick={this.onEdit.bind(this, selected)}
+                      />
+                    </div>
+                    
+                  </div> : null }
+              </VelocityTransitionGroup>
+              
+              <Divider />
+
+              <VelocityTransitionGroup {...itemAnimationProps}>
+                { !_.isEmpty(selected) ?
+                  <div className="item-group">
+                    <div className="item">
+                      <div className="item-header">Modalidade</div>
+                      <div className="item-value">{getModalityName(selected.modalidade)}</div>
+                    </div>
+                    
+                    <div className="item">
+                      <div className="item-header">Número</div>
+                      <div className="item-value">{selected.numero}</div>
+                    </div>
+                    
+                    <div className="item">
+                      <div className="item-header">Data de realização</div>
+                      <div className="item-value">{formatDate(selected.data)}</div>
+                    </div>
+                    
+                    <div className="item">
+                      <div className="item-header">Segmento</div>
+                      <div className="item-value">{selected.segmentos.descricao}</div>
+                    </div>
+                    
+                    <div className="item">
+                      <div className="item-header">Valor estimado</div>
+                      <div className="item-value">{formatAmount(selected.valor)}</div>
+                    </div>
+                  </div>
+                  : null }
+              </VelocityTransitionGroup>
+              
+              <Divider />
+
+              <VelocityTransitionGroup {...itemAnimationProps}>
+                { !_.isEmpty(selected.orgaos) ?
+                  <div className="item">
+                    <div className="item-header">Local</div>
+                    <div className="item-value">
+                      <p>{selected.orgaos.nome}</p>
+                      <p>{`${selected.orgaos.cidades.nome} - ${selected.orgaos.cidades.estados.nome}`}</p>
+                    </div>
+                  </div>
+                  : null }
+              </VelocityTransitionGroup>
+              
+              <Divider />
+
+              <VelocityTransitionGroup {...itemAnimationProps}>
+                { !_.isEmpty(selected) ?
+                  <div className="item">
+                    <div className="item-header">Objeto</div>
+                    <div className="item-value">
+                      {selected.objeto}
+                    </div>
+                  </div>
+                  : null }
+              </VelocityTransitionGroup>
+              
+              <Divider />
+
+              <VelocityTransitionGroup {...itemAnimationProps}>
+                { !_.isEmpty(selected) ?
+                  <div className="item-group">
+                    <div className="item">
+                      <div className="item-header">Exclusivo para MPE</div>
+                      <div className="item-value">
+                        <Label text={selected.exclusivo ? 'SIM' : 'NÃO'}
+                               color={selected.exclusivo ? 'green' : 'red'} />
+                      </div>
+                    </div>
+                  </div>
+                  : null }
+              </VelocityTransitionGroup>
+              
+              <Divider />
+              
+              <div className="item">
+
+                <a href={selected.link} target="_blank">
+                  <Button type="dark" text="VISUALIZAR EDITAL" />
+                </a>
+              </div>
+            </div>           
+            
+          </RightDrawer>
+        </VelocityComponent>
       </div>
     );
   }
@@ -317,15 +550,27 @@ const mapDispatchToProps = (dispatch) => {
     onApplySearchFilter,
     onClearSearchFilter,
     onSearchPaginationChange,
+    onSelectedSearchChange,
+
+
+    onEditNoticeSet,
+    
   } = noticeActions;
   
   const actions = {
+
+    showModalWithComponent,
+    closeModal,
+    
     fetchSegments,
     fetchNotices,
     onUpdateSearchFilter,
     onApplySearchFilter,
     onClearSearchFilter,
     onSearchPaginationChange,
+    onSelectedSearchChange,
+
+    onEditNoticeSet
   };
 
   return bindActionCreators(actions, dispatch);
@@ -333,4 +578,4 @@ const mapDispatchToProps = (dispatch) => {
 
 SearchNotice = connect(mapStateToProps, mapDispatchToProps)(SearchNotice);
 
-export default SearchNotice;
+export default withRouter(SearchNotice);

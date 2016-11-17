@@ -12,6 +12,7 @@ import Summary from './containers/Dashboard/Summary';
 
 import Forms from './containers/Forms';
 import Notice from './containers/Forms/Notice';
+import EditNotice from './containers/Forms/Notice/EditNotice';
 
 import Segment from './containers/Forms/Segment';
 import EditSegment from './containers/Forms/Segment/EditSegment';
@@ -41,7 +42,9 @@ export default (
       </Route>
       
       <Route path="forms" component={Forms}>
-        <Route path="notice"   component={Notice} />
+        <Route path="notice"   component={Notice}>
+          <Route path="edit/:noticeId" component={EditNotice}/>
+        </Route>
         <Route path="segment" component={Segment}>
           <Route path="edit/:segmentId" component={EditSegment}/>
         </Route>

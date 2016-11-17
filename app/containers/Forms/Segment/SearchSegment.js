@@ -50,6 +50,7 @@ class SearchSegment extends Component {
   }
 
   onDeleteConfirm(segment) {
+    // TODO(diego): Request deleteSegmentById
     console.log(segment);
     const { closeModal } = this.props;
     closeModal();

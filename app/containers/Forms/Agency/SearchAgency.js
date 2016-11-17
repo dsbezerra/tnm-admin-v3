@@ -119,7 +119,6 @@ class SearchAgency extends Component {
       newPagination.current = page;
 
     onPaginationChange(newPagination);
-    
   }
 
   renderPagination() {
@@ -170,7 +169,6 @@ class SearchAgency extends Component {
                         onClick={this.onPageClick}/> : null}
       </Pagination>
     );
-    
   }
   
   renderFilter() {

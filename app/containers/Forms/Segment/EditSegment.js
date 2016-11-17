@@ -148,8 +148,7 @@ class EditSegment extends Component {
     
     return (
       <div className="tnm-main-content">
-
-        { _.isEmpty(segment.original) ? <Loader /> : this.renderForm() }
+        {_.isEmpty(segment.original) ? <Loader /> : this.renderForm()}
       </div>          
     );
   }
@@ -159,7 +158,7 @@ const mapStateToProps = (state) => {
   const { segment } = state;
   return {
     ...segment.edit,
-    segments: segment.segments,
+    segments: segment.list,
   }
 }
 

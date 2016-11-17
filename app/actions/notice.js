@@ -14,6 +14,9 @@ import {
   SEARCH_NOTICE_FILTER_APPLY,
   SEARCH_NOTICE_FILTER_CLEAR,
   SEARCH_NOTICE_PAGINATION_CHANGE,
+  SEARCH_NOTICE_SELECTED_CHANGE,
+
+  EDIT_NOTICE_SET,
   
 } from '../constants/ActionTypes';
 
@@ -21,6 +24,38 @@ export function onUpdateAction(action) {
   return {
     type: NOTICE_ACTION_CHANGE,
     action,
+  }
+}
+
+export function requestNotices() {
+  return {
+    type: REQUEST_NOTICES,
+  }
+}
+
+export function receiveNotices(notices) {
+  return {
+    type: RECEIVE_NOTICES,
+    notices,
+  }
+}
+
+export function requestAgencySearch() {
+  return {
+    type: INSERT_NOTICE_REQUEST_AGENCY_SEARCH,
+  }
+}
+
+export function receiveAgencySearch(agencies) {
+  return {
+    type: INSERT_NOTICE_RECEIVE_AGENCY_SEARCH,
+    agencies,
+  }
+}
+
+export function clearSearchAgencies() {
+  return {
+    type: INSERT_NOTICE_AGENCY_SEARCH_CLEAR,
   }
 }
 
@@ -50,35 +85,17 @@ export function onClearSearchFilter() {
   }
 }
 
-export function requestAgencySearch() {
+export function onSelectedSearchChange(selected) {
   return {
-    type: INSERT_NOTICE_REQUEST_AGENCY_SEARCH,
+    type: SEARCH_NOTICE_SELECTED_CHANGE,
+    selected
   }
 }
 
-export function receiveAgencySearch(agencies) {
+export function onEditNoticeSet(notice) {
   return {
-    type: INSERT_NOTICE_RECEIVE_AGENCY_SEARCH,
-    agencies,
-  }
-}
-
-export function requestNotices() {
-  return {
-    type: REQUEST_NOTICES,
-  }
-}
-
-export function receiveNotices(notices) {
-  return {
-    type: RECEIVE_NOTICES,
-    notices,
-  }
-}
-
-export function clearSearchAgencies() {
-  return {
-    type: INSERT_NOTICE_AGENCY_SEARCH_CLEAR,
+    type: EDIT_NOTICE_SET,
+    notice,
   }
 }
 
@@ -127,5 +144,26 @@ export function fetchNotices(filter) {
       // Update state with received data
       dispatch(receiveNotices(json.data))
     });
+  }
+}
+
+/* Fetch a notice by id */
+export function fetchNoticeById(id, filter) {
+  return function (dispatch) {
+
+    let url = '/notices/' + id;
+    if(filter) {
+      url += '?filter=' + JSON.stringify(filter);
+    }
+    
+    return fetch(url, {
+      method: 'GET',
+      credentials: 'include',
+    })
+      .then(response => response.json())
+      .then(json => {
+        // Update state with received data
+        dispatch(onEditNoticeSet(json.data))
+      });
   }
 }

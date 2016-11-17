@@ -1,17 +1,27 @@
 import React, { PropTypes } from 'react';
 
 function Label(props) {
-  const { text, inline } = props;
+  const {
+    text,
+    inline,
+    color
+  } = props;
 
   let style = {...props.style};
+
+  let clazz = 'tnm-label';
 
   if(inline) {
     style.display = 'inline-block';
   }
+
+  if(color) {
+    clazz += ' ' + color;
+  }
   
   return (
     <label htmlFor={props.forName}
-           className="tnm-label"
+           className={clazz}
            style={style}>
       {text}
     </label>

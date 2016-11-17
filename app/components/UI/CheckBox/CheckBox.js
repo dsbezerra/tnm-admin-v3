@@ -13,6 +13,24 @@ class CheckBox extends Component {
     this.onClick = this.onClick.bind(this);
   }
 
+  componentDidMount() {
+    const { checked } = this.props;
+    if(checked) {
+      this.setState({
+        checked,
+      })
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { checked } = this.props;
+    if(checked != nextProps.checked) {
+      this.setState({
+        checked: nextProps.checked,
+      });
+    }
+  }
+
   onClick(event) {
     // Set checked
     this.toggle(() => {

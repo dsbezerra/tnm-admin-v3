@@ -8,8 +8,9 @@ import { ModalityOptions } from '../../../data/notice';
 import * as noticeActions from '../../../actions/notice';
 
 import ActionList from '../../../components/ActionList';
-import TabLayout from '../../../components/TabLayout';
 import AgencyResultItem from '../../../components/Agency/AgencyResultItem';
+import DropdownMenu from '../../../components/DropdownMenu';
+import TabLayout from '../../../components/TabLayout';
 
 import { fetchSegments } from '../../../actions/segment';
 
@@ -29,7 +30,6 @@ import {
   SearchableTextField,
 } from '../../../components/UI';
 
-import DropdownMenu from '../../../components/DropdownMenu';
 
 class InsertNotice extends Component {
 
@@ -53,7 +53,6 @@ class InsertNotice extends Component {
     if(segments && segments.length === 0) {
       fetchSegments({ order: 'descricao ASC' });
     }
-    // updateFormFieldsIfNeeded
   }
 
   onInsert(event) {
@@ -195,6 +194,13 @@ class InsertNotice extends Component {
           <Field>
             <CheckBox text="Exclusivo MPE"
                       onClick={this.onExclusiveClick} />
+          </Field>
+
+          <Field>
+            <Label text="Link" />
+            <TextField id="insertNoticeLinkField"
+                       placeholder="Ex: http://site-do-orgao.com/edital.pdf"
+                       className="dark" />
           </Field>
 
 

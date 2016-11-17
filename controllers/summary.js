@@ -20,7 +20,7 @@ export const getDatabaseMetrics = (req, res) => {
   async.parallel([
     // Count of biddings
     function(callback) {
-      countWithCallback('Bidding', token,  null, callback);
+      countWithCallback('Notice', token,  null, callback);
     },
     // Count of agencies
     function(callback) {

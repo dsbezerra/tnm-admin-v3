@@ -39,23 +39,13 @@ function renderHeader(headers, sort, onHeaderClick) {
   );
 }
 
-function renderRows(notice, i) {
-  return (
-    <TableRow key={notice.id}>
-      <TableCell text={getModalityName(notice.modalidade)} />
-      <TableCell text={notice.numero} />
-      <TableCell text={notice.objeto} />
-      <TableCell text={formatDate(notice.data)} />
-      <TableCell>
-        <Icon className="clickable" name="mode_edit" />
-        <Icon className="clickable" name="delete" />
-      </TableCell>
-    </TableRow>
-  );
-}
-
 function NoticeTable(props) {
-  const { notices, sort, onHeaderClick } = props;
+  const {
+    notices,
+    sort,
+    onHeaderClick,
+    onItemClick,
+  } = props;
 
   const headers = [
     { name: 'Modalidade',         clazz: 'modality', sort: 'modalidade' },
@@ -65,12 +55,31 @@ function NoticeTable(props) {
     { name: '',                   clazz: 'actions' }
   ];
 
+  const rows = _.map(notices, (notice, i) => {
+    return (
+      <TableRow key={notice.id} onClick={onItemClick.bind(this, notice)}>
+        <TableCell text={getModalityName(notice.modalidade)} />
+        <TableCell text={notice.numero} />
+        <TableCell text={notice.objeto} />
+        <TableCell text={formatDate(notice.data)} />
+        <TableCell>
+          <Icon className="clickable"
+                name="mode_edit"
+                onClick={props.onEdit.bind(this, notice)} />
+          <Icon className="clickable"
+                name="delete"
+                onClick={props.onDelete.bind(this, notice)} />
+        </TableCell>
+      </TableRow>
+    );
+  });
+
   return (
     <HorizontalScroller>
       <Table>
         {renderHeader(headers, sort, onHeaderClick)}
         <TableBody>
-          {_.map(notices, renderRows)}
+          {rows}
         </TableBody>
       </Table>
     </HorizontalScroller>

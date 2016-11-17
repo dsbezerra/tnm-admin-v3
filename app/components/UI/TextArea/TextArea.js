@@ -9,7 +9,8 @@ export default function TextArea(props) {
   }
   
   return (
-    <textarea placeholder={placeholder}
+    <textarea id={props.id}
+              placeholder={placeholder}
               className={clazz}
               onChange={props.onChange}
     >

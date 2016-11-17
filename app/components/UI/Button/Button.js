@@ -5,13 +5,18 @@ function Button(props) {
   const {
     text,
     type,
-    buttonType
+    buttonType,
+    color
   } = props;
 
   let clazz = 'tnm-button';
 
   if(type) {
     clazz += ' ' + type;
+  }
+
+  if(color) {
+    clazz += ' ' + color;
   }
   
   return (

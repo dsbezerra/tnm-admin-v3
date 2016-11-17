@@ -118,7 +118,8 @@ class SearchableTextField extends Component {
     
     return (
       <div className="tnm-textfield-search" ref="textfield">
-        <TextField placeholder={placeholder}
+        <TextField id={this.props.id}
+                   placeholder={placeholder}
                    className={this.props.className}
                    onChange={this.props.onChange}
                    onFocus={this.onFocus}

@@ -180,7 +180,6 @@ export function fetchSegmentById(id) {
   }
 }
 
-
 export function fetchSegmentsCount(filter) {
   return function (dispatch) {
 

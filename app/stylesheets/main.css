@@ -265,6 +265,82 @@ body::before {
   overflow-x: hidden;
 }
 
+
+.tnm-rightdrawer-wrapper {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  max-width: 600px;
+  background-color: #202020;
+  z-index: 10;
+  box-sizing: border-box;
+  -webkit-box-shadow: 0px 0px 32px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0px 0px 32px 0px rgba(0,0,0,0.75);
+  box-shadow: 0px 0px 32px 0px rgba(0,0,0,0.75);
+  overflow-y: auto;
+}
+
+.tnm-drawer {
+  margin: 24px;
+  box-sizing: border-box;
+}
+
+.tnm-drawer .drawer-header {
+  margin: 40px 10px 20px 40px;
+}
+
+.tnm-drawer .drawer-header .tnm-header {
+  padding-left: 24px;
+}
+
+.tnm-drawer .drawer-content {
+  padding: 24px;
+}
+
+.tnm-drawer .drawer-content .item .item-header {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.4);
+  margin-bottom: 10px;
+  font-weight: 300;
+}
+
+.tnm-drawer .drawer-content .item {
+  margin-bottom: 24px;
+}
+
+.tnm-drawer .drawer-content .item-group {
+  overflow: auto;
+}
+
+.tnm-drawer .drawer-content .item-group .item {
+  float: left;
+  margin-right: 20px;
+}
+
+.tnm-drawer .drawer-content .item .item-value {
+  font-size: 18px;
+  color: white;
+  display: inline-block;
+}
+
+.tnm-drawer .tnm-drawer-close {
+  display: inline-block;
+  position: absolute;
+  left: 20px;
+}
+
+.tnm-drawer .tnm-drawer-close .tnm-icon {
+  font-size: 40px;
+  color: rgba(255, 255, 255, 0.2);
+}
+
+.tnm-drawer-close .tnm-icon:hover {
+  color: #fff;
+  cursor: pointer;
+}
+
 .tnm-toasts {
   position: fixed;
   top: 12%;
@@ -764,6 +840,48 @@ nav {
   background-color: #fff;
   color: #181818;
   box-shadow: 0px 30px 28px -6px rgba(0,0,0,0.2);
+}
+
+.tnm-button.primary {
+  width: 100%;
+  border-radius: 3px;
+  min-height: 40px;
+  color: #fff;
+  border: 0;
+}
+
+.tnm-button.secondary {
+  background-color: transparent;
+  width: 100%;
+  border-radius: 3px;
+  min-height: 40px;
+  color: #fff;
+  border: 0;
+}
+
+.tnm-button.primary:hover {
+  box-shadow: 0px 10px 16px -6px rgba(0,0,0,0.2);
+}
+
+.tnm-button.secondary:hover {
+  box-shadow: 0px 10px 16px -6px rgba(0,0,0,0.2);
+  background-color: rgba(255, 255, 255, .05);
+}
+
+.tnm-button.primary.red {
+  background-color: #a01d1d;
+}
+
+.tnm-button.primary.red:active {
+  color: #a01d1d;
+}
+
+.tnm-button.primary.blue {
+  background-color: #1d48a0;
+}
+
+.tnm-button.secondary.blue {
+  color: #1d48a0;
 }
 
 /* Content Styles */
@@ -1897,10 +2015,12 @@ nav {
 }
 
 .tnm-button.primary:active {
-  color: #fff;
-  border: 1px solid #ff9800;
   cursor: pointer;
-  background-color: #ff9800;
+  background-color: #fff;
+}
+
+.tnm-button.secondary:active {
+  background-color: #fff;
 }
 
 .tnm-button:hover:disabled {
@@ -3012,6 +3132,10 @@ nav {
   font-weight: 300;
   table-layout: fixed;
   width: 100%;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 .tnm-table th {
