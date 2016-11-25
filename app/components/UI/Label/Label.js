@@ -4,7 +4,8 @@ function Label(props) {
   const {
     text,
     inline,
-    color
+    color,
+    className,
   } = props;
 
   let style = {...props.style};
@@ -17,6 +18,10 @@ function Label(props) {
 
   if(color) {
     clazz += ' ' + color;
+  }
+
+  if(className) {
+    clazz += ' ' + className;
   }
   
   return (

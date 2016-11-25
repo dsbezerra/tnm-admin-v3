@@ -149,7 +149,7 @@ const mapStateToProps = (state) => {
   return segment.insert;
 }
 
-function mapDispatchToProps(dispatch) {
+const mapDispatchToProps = (dispatch) => {
   const {
     insertSegment,
     onUpdateInsertName

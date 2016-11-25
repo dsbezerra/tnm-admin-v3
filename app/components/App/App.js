@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import Main from '../../containers/Main';
+import ContextMenuManager from '../../containers/ContextMenuManager';
 import ModalManager from '../../containers/ModalManager';
 import ToastManager from '../../containers/ToastManager';
 

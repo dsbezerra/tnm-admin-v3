@@ -20,10 +20,15 @@ import * as summaryController from './controllers/summary';
 import * as plivoController from './controllers/plivo';
 
 import {
+  scrapers,
+} from './controllers';
+
+import {
   agencies,
+  installations,
+  locations,
   notices,
   segments,
-  locations
 } from './routes';
 
 app.use(require('webpack-dev-middleware')(compiler, {
@@ -91,6 +96,9 @@ app.use('/agencies', agencies);
 app.use('/notices', notices);
 app.use('/segments', segments);
 app.use('/locations', locations);
+app.use('/installations', installations);
+
+app.use('/scrapers', scrapers);
 
 app.get('/metrics/database', summaryController.getDatabaseMetrics);
 app.get('/metrics/users', summaryController.getUsersMetrics);

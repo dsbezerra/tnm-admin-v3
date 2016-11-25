@@ -4,7 +4,7 @@ import { withRouter } from 'react-router';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { login } from '../../actions/user';
+import { login } from '../../actions/admin';
 import * as StorageUtils from '../../utils/StorageUtils';
 
 import {
@@ -125,7 +125,7 @@ class Login extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { isLogging } = state.user;
+  const { isLogging } = state.admin;
   return {
     isLogging,
   };

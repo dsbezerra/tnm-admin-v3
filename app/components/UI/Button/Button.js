@@ -6,7 +6,8 @@ function Button(props) {
     text,
     type,
     buttonType,
-    color
+    color,
+    className
   } = props;
 
   let clazz = 'tnm-button';
@@ -17,6 +18,10 @@ function Button(props) {
 
   if(color) {
     clazz += ' ' + color;
+  }
+
+  if(className) {
+    clazz += ' ' + className;
   }
   
   return (

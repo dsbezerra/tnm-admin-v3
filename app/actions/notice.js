@@ -11,7 +11,6 @@ import {
   INSERT_NOTICE_AGENCY_SEARCH_CLEAR,
   
   SEARCH_NOTICE_FILTER_CHANGE,
-  SEARCH_NOTICE_FILTER_APPLY,
   SEARCH_NOTICE_FILTER_CLEAR,
   SEARCH_NOTICE_PAGINATION_CHANGE,
   SEARCH_NOTICE_SELECTED_CHANGE,
@@ -70,12 +69,6 @@ export function onUpdateSearchFilter(filter) {
   return {
     type: SEARCH_NOTICE_FILTER_CHANGE,
     filter,
-  }
-}
-
-export function onApplyFilterSearch() {
-  return {
-    type: SEARCH_NOTICE_FILTER_APPLY,
   }
 }
 

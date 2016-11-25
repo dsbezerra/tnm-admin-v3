@@ -1,3 +1,4 @@
+import _ from 'lodash';
 
 import {
   NOTICE_ACTION_CHANGE,
@@ -12,7 +13,6 @@ import {
   INSERT_NOTICE_AGENCY_SEARCH_CLEAR,
   
   SEARCH_NOTICE_FILTER_CHANGE,
-  SEARCH_NOTICE_FILTER_APPLY,
   SEARCH_NOTICE_FILTER_CLEAR,
   SEARCH_NOTICE_PAGINATION_CHANGE,
   SEARCH_NOTICE_SELECTED_CHANGE,
@@ -43,16 +43,7 @@ const searchInitialState = {
   pagination: {
     current: 0
   },
-  filter: {
-    modality: -1,
-    number: '',
-    agencyId: '',
-    segmentId: '',
-    amount: -1,
-    object: '',
-    startDate: '',
-    endDate: '',
-  },
+  filter: {},
 }
 
 const editInitialState = {
@@ -111,7 +102,8 @@ const search = (state = searchInitialState, action) => {
     case SEARCH_NOTICE_FILTER_CHANGE:
     {
       const filter = { ...state.search.filter };
-      filter[action.filter.property] = action.filter.value;   
+      _.set(filter, action.filter.property, action.filter.value);  
+
       return {
         ...state,
         search: {
@@ -120,15 +112,6 @@ const search = (state = searchInitialState, action) => {
         }
       }
     }
-
-    case SEARCH_NOTICE_FILTER_APPLY:
-      return {
-        ...state,
-        search: {
-          ...state.search,
-          isFiltering: true,
-        }
-      }
 
     case SEARCH_NOTICE_FILTER_CLEAR:
       return {
@@ -206,7 +189,6 @@ const notice = (state = initialState, action) => {
       return insert(state, action);
       
     case SEARCH_NOTICE_FILTER_CHANGE:
-    case SEARCH_NOTICE_FILTER_APPLY:
     case SEARCH_NOTICE_FILTER_CLEAR:
     case SEARCH_NOTICE_PAGINATION_CHANGE:
     case SEARCH_NOTICE_SELECTED_CHANGE:

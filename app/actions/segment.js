@@ -148,7 +148,7 @@ export function fetchSegments(filter) {
     dispatch(requestSegments());
 
     
-    let url = '/segments'
+    let url = '/segments';
     if(filter) {
       url += '?filter=' + JSON.stringify(filter);
     }

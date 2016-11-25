@@ -1,120 +1,159 @@
 import fetch from 'isomorphic-fetch';
 
-import * as StorageUtils from '../utils/StorageUtils';
-
 import {
-  UPDATE_USERNAME,
-  REQUEST_LOGIN,
-  LOGIN_FAILURE,
-  LOGIN_SUCCESSFUL,
-  REQUEST_LOGOUT,
-  LOGOUT_SUCCESSFUL,
-  LOGOUT_FAILURE,
+  REQUEST_USERS,
+  RECEIVE_USERS,
+  REQUEST_USERS_COUNT,
+  RECEIVE_USERS_COUNT,
+  REQUEST_NEWEST_USERS,
+  RECEIVE_NEWEST_USERS,
+  USERS_SELECT_CHANGE,
+  USERS_ALL_VIEW_STYLE_CHANGE,
+  USERS_ALL_SORT_CHANGE,
+  USERS_ALL_FILTER_CHANGE,
+  USERS_ALL_FILTER_CLEAR,
+  USERS_ALL_LIMIT_CHANGE,
 } from '../constants/ActionTypes';
 
-/* Request Login action to  notify reducer for UI updates */
-export function requestLogin() {
+export function requestUsers() {
   return {
-    type: REQUEST_LOGIN,
+    type: REQUEST_USERS,
   }
 }
 
-/* Handles login success */ 
-export function loginSuccessful(user) {
+export function receiveUsers(users) {
   return {
-    type: LOGIN_SUCCESSFUL,
+    type: RECEIVE_USERS,
+    users,
+  }
+}
+
+export function requestUsersCount() {
+  return {
+    type: REQUEST_USERS_COUNT,
+  }
+}
+
+export function receiveUsersCount(count) {
+  return {
+    type: RECEIVE_USERS_COUNT,
+    count
+  }
+}
+
+export function requestNewestUsers() {
+  return {
+    type: REQUEST_NEWEST_USERS,
+  }
+}
+
+export function receiveNewestUsers(users) {
+  return {
+    type: RECEIVE_NEWEST_USERS,
+    users
+  }
+}
+
+export function onUsersSelectChange(user) {
+  return {
+    type: USERS_SELECT_CHANGE,
     user,
   }
 }
 
-/* Handles login failure */
-export function loginFailure() {
+export function onAllViewStyleChange(viewStyle) {
   return {
-    type: LOGIN_FAILURE,
+    type: USERS_ALL_VIEW_STYLE_CHANGE,
+    viewStyle
   }
 }
 
-export function requestLogout() {
+export function onAllSortChange(sort) {
   return {
-    type: REQUEST_LOGOUT,
+    type: USERS_ALL_SORT_CHANGE,
+    sort,
   }
 }
 
-/* Logouts the user */
-export function logoutSuccessful() {
+export function onAllFilterChange(filter) {
   return {
-    type: LOGOUT_SUCCESSFUL,
+    type: USERS_ALL_FILTER_CHANGE,
+    filter,
   }
 }
 
-export function logoutFailure() {
+export function onAllFilterClear() {
   return {
-    type: LOGOUT_FAILURE,
+    type: USERS_ALL_FILTER_CLEAR,
   }
 }
 
-export function updateUsername(username) {
+export function onAllLimitChange(limit) {
   return {
-    type: UPDATE_USERNAME,
-    username
+    type: USERS_ALL_LIMIT_CHANGE,
+    limit,
   }
 }
 
-/* Start login request */
-export function login(email, password, router) {
+export function fetchUsers(filter) {
   return function (dispatch) {
-    // Dispatch requestLogin so the UI displays a Spinner
-    dispatch(requestLogin());
-    const body = { email: email, password: password, };
-    return fetch('/login', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
-      credentials: 'include'
+
+    dispatch(requestUsers());
+
+    let url = '/installations';
+    if(filter) {
+      url += '?filter=' + JSON.stringify(filter);
+    }
+
+    return fetch(url, {
+      method: 'GET',
+      credentials: 'include',
     })
     .then(response => response.json())
     .then(json => {
-      if(json.success) {
-
-        StorageUtils.setItem('username', json.data.userId);
-        
-        dispatch(loginSuccessful(json.data));
-        router.push('/dashboard');
-      }
-      else if(json.statusCode !== 200) {
-        dispatch(loginFailure());
-      }
+      dispatch(receiveUsers(json.data));
     });
   }
 }
 
-export function logout(router) {
-  return function(dispatch) {
-    dispatch(requestLogout());
+export function fetchUsersCount(filter) {
+  return function (dispatch) {
+    
+    dispatch(requestUsersCount());
 
-    return fetch('/logout', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
+    let url = '/installations/count'
+    if(filter) {
+      url += '?filter=' + JSON.stringify(filter);
+    }
+
+    return fetch(url, {
+      method: 'GET',
+      credentials: 'include',
+    })
+    .then(response => response.json())
+    .then(json => {
+      // Update state with received data
+      dispatch(receiveUsersCount(json.data.count))
+    });
+  }
+}
+
+export function fetchNewestUsers(filter) {
+  return function (dispatch) {
+    dispatch(requestNewestUsers());
+
+    let url = '/installations';
+    if(filter) {
+      url += '?filter=' + JSON.stringify(filter);
+    }
+
+    return fetch(url, {
+      method: 'GET',
       credentials: 'include'
     })
     .then(response => response.json())
     .then(json => {
-      if(json.success) {
-
-        setTimeout(() => {
-          dispatch(logoutSuccessful());
-          router.replace('/login');
-        }, 2000);
-      }
-      else {
-        dispatch(logoutFailure());
-      }
-    })
+      dispatch(receiveNewestUsers(json.data));
+    });
   }
 }

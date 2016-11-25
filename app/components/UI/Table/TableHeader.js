@@ -4,7 +4,7 @@ import { Icon } from '../../UI';
 
 export default function TableHeader(props) {
 
-  const { header, active } = props;
+  const { header, active, order } = props;
 
   let clazz = 'table-header';
 
@@ -19,7 +19,7 @@ export default function TableHeader(props) {
   return (
     <th className={clazz} onClick={props.onClick}>
       {header}
-      {active ? <Icon name="keyboard_arrow_down"
+      {active ? <Icon name={order === 'DESC' ? 'keyboard_arrow_down' : 'keyboard_arrow_up'}
                       style={{
                         position: 'relative',
                         top: '5px',

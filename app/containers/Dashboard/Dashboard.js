@@ -27,10 +27,12 @@ class Dashboard extends Component {
   }
 
   componentDidMount() {
-    const { dispatch, fetchDatabaseMetrics } = this.props;
+    const { dispatch, location, onChangePath } = this.props;
     if(dispatch) {
       dispatch(onChangeTopBarTitle('TáNaMão Licitações'));
     }
+
+    onChangePath(location.pathname);
   }
 
   render() {

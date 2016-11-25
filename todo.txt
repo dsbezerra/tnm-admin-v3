@@ -3,65 +3,63 @@
 // Todo List 
 // admin-v2
 
-/ Backend
+- A fazer
+/ Parcialmente feito
+* Feito
+
+/ Início
+  / Resumo
+    * Plivo
+    * Estatísticas do banco
+    * Estatísticas de usuários
+    - Gráficos
+    - Outras informações (sobre scrapers, etc)
+  - Analytics
+  - Avaliações
+
+/ Formulários
+
+  - Filtros
+
+  * Licitações
+    * Get todas licitações
+    * Get licitação pelo id
+    * Atualizar licitação
+    * Deletar licitação
+ 
+  * Segmentos
+    * Get todos segmentos
+    * Get segmento pelo id
+    * Inserir segmento
+    * Atualizar segmento
+    * Deletar segmento
+
+  / Órgãos
+    * Get todos órgãos
+    * Get órgão pelo id
+    - Get órgãos de uma cidade/estado 
+    * Inserir órgão
+    * Atualizar órgão
+    * Deletar órgão
   
-  - Início
-    - Resumo
-    - Analytics
-    - Avaliações
+  * Locais
+    * Get todas cidades
+    * Get todos estados
+    * Get todas cidades de um estado
+    * Inserir cidade
+    * Inserir estado
+    * Atualizar cidade
+    * Atualizar estado
+    * Deletar cidade
+    * Deletar estado
 
-  / Formulários  
-    
-    * Licitações
-      * Get todas licitações
-      * Get licitação pelo id
-      * Atualizar licitação
-      * Deletar licitação
-  
-    * Segmentos
-      * Get todos segmentos
-      * Get segmento pelo id
-      * Inserir segmento
-      * Atualizar segmento
-      * Deletar segmento
+- Usuários
+  - Get todos usuários
+  - Get usuário pelo id
+  - Get usuários pelo tipo de assinatura
 
-    / Órgãos
-      * Get todos órgãos
-      * Get órgão pelo id
-      - Get órgãos de uma cidade/estado 
-      * Inserir órgão
-      * Atualizar órgão
-      * Deletar órgão
-  
-    * Locais
-      * Get todas cidades
-      * Get todos estados
-      * Get todas cidades de um estado
-      * Inserir cidade
-      * Inserir estado
-      * Atualizar cidade
-      * Atualizar estado
-      * Deletar cidade
-      * Deletar estado
-
-  - Usuários
-    - Get todos usuários
-    - Get usuário pelo id
-    - Get usuários pelo tipo de assinatura
-
-  - Ferramentas
-    - Scraper
-    - Rede Neural
-    - Manipulador de Arquivos
-
-
-/ Frontend
-  / Inicio
-  / Formulários
-  - Usuários
-  - Ferramentas
-
-
-  - Elementos UI    
-    - Snackbar
+- Ferramentas
+  - Scraper
+  - Rede Neural
+  - Manipulador de Arquivos
     

@@ -14,7 +14,6 @@ export const dashTabs = [
   },*/
 ];
 
-
 export const formsTabs = [
   {
     name: 'LICITAÇÕES',
@@ -33,3 +32,14 @@ export const formsTabs = [
     pathname: '/forms/location'
   },
 ];
+
+export const usersTabs = [
+  {
+    name: 'USUÁRIOS',
+    pathname: '/users',
+  },
+  /*{
+    name: 'TODOS',
+    pathname: '/users/#all'
+  }*/
+]

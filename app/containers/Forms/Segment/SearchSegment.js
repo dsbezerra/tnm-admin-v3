@@ -108,9 +108,11 @@ class SearchSegment extends Component {
     const animation = {
       enter: {
         animation: {
-          opacity: [1, 0]
+          opacity: [1, 0],
+          translateY: ['0%', '10%'],
         },
-        duration: 400,
+        duration: 300,
+        easing: 'ease-out',
       },
 
       leave: {
@@ -132,11 +134,11 @@ class SearchSegment extends Component {
     return (
       <VelocityTransitionGroup component="div" {...animation}>
         { viewStyle === 'list' ?
-          <List>
+          <List key={viewStyle}>
             {list.map(this.renderSegment)}
           </List>
           :
-          <Grid>
+          <Grid key={viewStyle}>
             {list.map(this.renderSegment)}
           </Grid>
         }

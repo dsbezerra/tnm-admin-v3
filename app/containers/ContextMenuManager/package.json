@@ -1,0 +1,6 @@
+{
+  "name": "ContextMenuManager",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./ContextMenuManager.js"
+}

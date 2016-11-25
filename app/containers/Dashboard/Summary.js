@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
+import VelocityComponent from 'velocity-react/velocity-component';
+
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import * as summaryActions from '../../actions/summary';
+
+import { slideUpFadeIn } from '../../animations';
 
 import {
   CircularLoader,
@@ -54,28 +58,33 @@ class Summary extends Component {
         {
           database.isFetching ?
           <CircularLoader /> :
-          <HorizontalScroller>
-            <Statistic hoverText="VER TODAS"
-                       text="LICITAÇÕES"
-                       value={database.numBiddings}
-                       pathname="/forms/notice"
-            />
-            <Statistic hoverText="VER TODOS"
-                       text="ÓRGÃOS"
-                       value={database.numAgencies}
-                       pathname="/forms/agency"
-            />
-            <Statistic hoverText="VER TODOS"
-                       text="SEGMENTOS"
-                       value={database.numSegments}
-                       pathname="/forms/segment"
-            />
-            <Statistic hoverText="VER TODOS"
-                       text="LOCAIS"
-                       value={database.numLocations}
-                       pathname="/forms/location"
-            />
-          </HorizontalScroller>
+          <VelocityComponent component="div" {...slideUpFadeIn}
+                             duration={300}
+                             easing="ease-out"
+                             runOnMount>
+            <HorizontalScroller>
+              <Statistic hoverText="VER TODAS"
+                         text="LICITAÇÕES"
+                         value={database.numBiddings}
+                         pathname="/forms/notice"
+              />
+              <Statistic hoverText="VER TODOS"
+                         text="ÓRGÃOS"
+                         value={database.numAgencies}
+                         pathname="/forms/agency"
+              />
+              <Statistic hoverText="VER TODOS"
+                         text="SEGMENTOS"
+                         value={database.numSegments}
+                         pathname="/forms/segment"
+              />
+              <Statistic hoverText="VER TODOS"
+                         text="LOCAIS"
+                         value={database.numLocations}
+                         pathname="/forms/location"
+              />
+            </HorizontalScroller>
+          </VelocityComponent>
         }
       </div>
     );
@@ -90,14 +99,19 @@ class Summary extends Component {
         {
           users.isFetching ?
           <CircularLoader /> :
-          <HorizontalScroller>
-            <Statistic hoverText="VER TODOS" text="TOTAL" value={users.total} />
-            <Statistic text="TRIAL" value={users.numTrials} />
-            <Statistic text="BÁSICO" value={users.numBasics} />
-            <Statistic text="PADRÃO" value={users.numDefaults} />
-            <Statistic text="PREMIUM" value={users.numPremiums} />
-            <Statistic text="HOJE" value={users.numToday} />
-          </HorizontalScroller>
+          <VelocityComponent component="div" {...slideUpFadeIn}
+                             duration={300}
+                             easing="ease-out"
+                             runOnMount>
+            <HorizontalScroller>
+              <Statistic hoverText="VER TODOS" text="TOTAL" value={users.total} pathname="/users" />
+              <Statistic text="TRIAL" value={users.numTrials} />
+              <Statistic text="BÁSICO" value={users.numBasics} />
+              <Statistic text="PADRÃO" value={users.numDefaults} />
+              <Statistic text="PREMIUM" value={users.numPremiums} />
+              <Statistic text="HOJE" value={users.numToday} />
+            </HorizontalScroller>
+          </VelocityComponent>
         }
       </div>
     );
@@ -113,25 +127,31 @@ class Summary extends Component {
         plivo.isFetching ?
           <CircularLoader /> :
 
-          <span>
-            <ul className="tnm-list plivo">
-              <li className="tnm-horizontal-layout flex-row space-between vertical-centered">
-                <Label text="Renovação Automática" />
-                <div className={"tnm-label" + (plivo.autoRecharge ? ' green' : ' red') }>{plivo.autoRecharge ? 'ATIVADO' : 'DESATIVADO'}</div>
-              </li>
+          <VelocityComponent {...slideUpFadeIn}
+                             component="div"
+                             duration={300}
+                             easing="ease-out"
+                             runOnMount>
+            <div>
+              <ul className="tnm-list plivo">
+                <li className="tnm-horizontal-layout flex-row space-between vertical-centered">
+                  <Label text="Renovação Automática" />
+                  <div className={"tnm-label" + (plivo.autoRecharge ? ' green' : ' red') }>{plivo.autoRecharge ? 'ATIVADO' : 'DESATIVADO'}</div>
+                </li>
+                
+                <li className="tnm-horizontal-layout flex-row space-between vertical-centered">
+                  <Label text="Tipo de Conta" />
+                  <div className={"tnm-label green"}>{plivo.accountType.toUpperCase()}</div>
+                </li>
+              </ul>
               
-              <li className="tnm-horizontal-layout flex-row space-between vertical-centered">
-                <Label text="Tipo de Conta" />
-                <div className={"tnm-label green"}>{plivo.accountType.toUpperCase()}</div>
-              </li>
-            </ul>
-            
-            <Statistic hoverText={'IR PARA PLIVO'}
-                       text={'CRÉDITOS RESTANTES'}
-                       value={'$ ' + plivo.remainingCredits}
-                       href="https://manage.plivo.com/dashboard"
-            />
-          </span>
+              <Statistic hoverText={'IR PARA PLIVO'}
+                         text={'CRÉDITOS RESTANTES'}
+                         value={'$ ' + plivo.remainingCredits}
+                         href="https://manage.plivo.com/dashboard"
+              />
+            </div>
+          </VelocityComponent>
         }
       </div>
     );

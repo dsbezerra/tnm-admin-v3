@@ -6,7 +6,7 @@ import { withRouter } from 'react-router';
 import VelocityComponent from 'velocity-react/velocity-component';
 import VelocityTransitionGroup from 'velocity-react/velocity-transition-group';
 
-import { logout, updateUsername } from '../../actions/user';
+import { logout, updateUsername } from '../../actions/admin';
 import * as mainActions from '../../actions/main';
 import * as StorageUtils from '../../utils/StorageUtils';
 
@@ -32,6 +32,8 @@ class Main extends Component {
   constructor(props) {
     super(props);
 
+    this.onDocumentClick = this.onDocumentClick.bind(this);
+    
     this.onLogout = this.onLogout.bind(this);
     this.onMenuItemClick = this.onMenuItemClick.bind(this);
   }
@@ -42,12 +44,34 @@ class Main extends Component {
     if(username && updateUsername) {
       updateUsername(username);
     }
+    
+    document.addEventListener('click', this.onDocumentClick);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('click', this.onDocumentClick);
+  }
+
+  onDocumentClick(event) {
+
+    const { target } = event;
+
+    if(target.id !== 'topBarUser') {
+      const {
+        isUserContextMenuVisible
+      } = this.props;
+
+      if(isUserContextMenuVisible) {
+        this.props.onToggleAdminContextMenu();
+      }
+    }    
   }
 
   onLogout() {
-    const { router, logout, onToggleNavbar } = this.props;
+    const { router, logout, isNavbarVisible, onToggleNavbar } = this.props;
     if(router && logout) {
-      onToggleNavbar();
+      if(isNavbarVisible)
+        onToggleNavbar();
       logout(router);
     }
   }
@@ -70,9 +94,11 @@ class Main extends Component {
       topBarTitle,
       isNavbarVisible,
       isLoggingOut,
+      isAdminContextMenuVisible,
 
       onChangePath,
-      onToggleNavbar
+      onToggleNavbar,
+      onToggleAdminContextMenu,
     } = this.props;
 
     // Nav shadow animation
@@ -120,7 +146,13 @@ class Main extends Component {
           
           </div> : null}
           
-          <TopBar title={topBarTitle} onToggleNavbar={onToggleNavbar}/>
+          <TopBar title={topBarTitle}
+                  username={username}
+                  isAdminContextMenuVisible={isAdminContextMenuVisible}
+                  onLogout={this.onLogout}
+                  onToggleAdminContextMenu={onToggleAdminContextMenu}
+                  onToggleNavbar={onToggleNavbar}
+          />
           <VelocityTransitionGroup component="div" {...shadowAnimationProps}>
             { isNavbarVisible ?
               <NavShadow onClick={onToggleNavbar}/> : null }
@@ -149,11 +181,11 @@ class Main extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { main, user } = state;
+  const { main, admin } = state;
   return {
     ...main,
-    username: user.username,
-    isLoggingOut: user.isLoggingOut
+    username: admin.username,
+    isLoggingOut: admin.isLoggingOut,
   };
 }
 

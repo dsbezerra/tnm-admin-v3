@@ -1,7 +1,9 @@
-import { MENUITEM_NAV_DIVIDER,
-         MENUITEM_NAV_HEADER,
-         MENUITEM_NAV_LIST,
-         MENUITEM_NAV_LIST_ITEM} from '../constants/MenuItemTypes.js';
+import {
+  MENUITEM_NAV_DIVIDER,
+  MENUITEM_NAV_HEADER,
+  MENUITEM_NAV_LIST,
+  MENUITEM_NAV_LIST_ITEM
+} from '../constants/MenuItemTypes.js';
 
 const navMenuItems = [
   {
@@ -103,12 +105,12 @@ const navMenuItems = [
         icon: 'layers',
         pathname: '/tools/neural-network',
       },
-      {
+      /*{
         type: MENUITEM_NAV_LIST_ITEM,
         text: 'Extrator/Conversor de Arquivos',
         icon: 'file_upload',
         pathname: '/tools/file-handlers',
-      }
+      }*/
     ]
   },
 ];

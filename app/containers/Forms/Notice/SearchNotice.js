@@ -7,6 +7,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 
+import { slideUpFadeIn } from '../../../animations';
 import { ModalityOptions } from '../../../data/notice';
 import {
   formatAmount,
@@ -14,6 +15,10 @@ import {
   formatDate,
   getModalityName
 } from '../../../utils/NoticeUtils';
+
+import {
+  getJavascriptDateFormatFromString
+} from '../../../utils/DateUtils';
 
 import { showModalWithComponent, closeModal } from '../../../actions/modal';
 import { fetchSegments } from '../../../actions/segment';
@@ -34,16 +39,18 @@ import {
   CheckBox,
 } from '../../../components/UI';
 
+import {
+  DropdownMenu,
+  Filter,
+  FilterGroup,
+  FilterField,
+  FilterButtons,
+} from '../../../components';
+
 import Pagination from '../../../components/Pagination';
 import Page from '../../../components/Pagination/Page';
 
-import Filter from '../../../components/Filter';
-import FilterGroup from '../../../components/Filter/FilterGroup';
-import FilterField from '../../../components/Filter/FilterField';
-import FilterButtons from '../../../components/Filter/FilterButtons';
-
 import ConfirmationModal from '../../../components/Modal/ConfirmationModal';
-import DropdownMenu from '../../../components/DropdownMenu';
 
 import NoticeTable from '../../../components/Notice/NoticeTable';
 import RightDrawer from '../../../components/Drawer/RightDrawer';
@@ -106,7 +113,55 @@ class SearchNotice extends Component {
   }
 
   onApplyFilter() {
+    const { filter, fetchNotices } = this.props;
 
+    let newFilter = { ...filter };
+    
+    if(newFilter.data) {
+
+      if(newFilter.data.gte && newFilter.data.lte) {
+        newFilter.and = [];
+        newFilter.and.push({
+          data: {
+            gte: getJavascriptDateFormatFromString(newFilter.data.gte, '/')
+          }
+        });
+        
+        newFilter.and.push({
+          data: {
+            lte: getJavascriptDateFormatFromString(newFilter.data.lte, '/')
+          }
+        });
+        
+        delete newFilter.data;
+      }
+      else if(newFilter.data.gte) {        
+        newFilter.data.gte = getJavascriptDateFormatFromString(newFilter.data.gte, '/');
+      }
+      else {
+        newFilter.data.lte = getJavascriptDateFormatFromString(newFilter.data.lte, '/');
+      }
+    }
+
+    fetchNotices({
+      order: 'data DESC',
+      limit: 20,
+      where: {
+        ...newFilter,
+      },
+      include: ['segmentos', {
+        relation: 'orgaos',
+        scope: {
+          include: {
+            relation: 'cidades',
+            scope: {
+              include: 'estados'
+            }
+          }
+        }
+      }]
+    });
+    
   }
 
   onClearFilter() {
@@ -210,7 +265,7 @@ class SearchNotice extends Component {
                   className="dark"
                   onChange={(value) => {
                       onUpdateSearchFilter({
-                        property: 'modality',
+                        property: 'modalidade',
                         value
                       })
                     }}
@@ -225,7 +280,7 @@ class SearchNotice extends Component {
                           isLoading={isFetchingSegments}
                           onChange={(value) => {
                               onUpdateSearchFilter({
-                                property: 'segmentId',
+                                property: 'segmentoId',
                                 value: value.id
                               })
                             }}
@@ -237,7 +292,7 @@ class SearchNotice extends Component {
             <TextField className="dark"
                        onChange={({ target }) => {
                            onUpdateSearchFilter({
-                             property: 'startDate',
+                             property: 'data.gte',
                              value: target.value,
                            })
                          }}
@@ -249,7 +304,7 @@ class SearchNotice extends Component {
             <TextField className="dark"
                        onChange={({ target }) => {
                            onUpdateSearchFilter({
-                             property: 'endDate',
+                             property: 'data.lte',
                              value: target.value,
                            })
                          }}
@@ -261,7 +316,7 @@ class SearchNotice extends Component {
           <CheckBox text="Exclusivo MPE"
                     onClick={(value) => {
                         onUpdateSearchFilter({
-                          property: 'exclusive',
+                          property: 'exclusivo',
                           value: value,
                         })
                       }} />
@@ -394,13 +449,19 @@ class SearchNotice extends Component {
 
           {
             isFetchingNotices ? <CircularLoader size="small" /> :
-            <NoticeTable notices={noticesList}
-                         sort="modality"
-                         onHeaderClick={this.onUpdateSort}
-                         onItemClick={this.onItemClick}
-                         onEdit={this.onEdit.bind(this)}
-                         onDelete={this.onDelete.bind(this)}
-            />
+            <VelocityComponent component="div"
+                               {...slideUpFadeIn}
+                               duration={300}
+                               easing="ease-out"
+                               runOnMount>
+              <NoticeTable notices={noticesList}
+                           sort="modality"
+                           onHeaderClick={this.onUpdateSort}
+                           onItemClick={this.onItemClick}
+                           onEdit={this.onEdit.bind(this)}
+                           onDelete={this.onDelete.bind(this)}
+              />
+            </VelocityComponent>
           }
             {this.renderPagination()}
         </div>
@@ -547,7 +608,6 @@ const mapDispatchToProps = (dispatch) => {
   const {
     fetchNotices,
     onUpdateSearchFilter,
-    onApplySearchFilter,
     onClearSearchFilter,
     onSearchPaginationChange,
     onSelectedSearchChange,
@@ -565,7 +625,6 @@ const mapDispatchToProps = (dispatch) => {
     fetchSegments,
     fetchNotices,
     onUpdateSearchFilter,
-    onApplySearchFilter,
     onClearSearchFilter,
     onSearchPaginationChange,
     onSelectedSearchChange,

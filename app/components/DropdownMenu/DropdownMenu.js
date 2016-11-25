@@ -72,11 +72,23 @@ class DropdownMenu extends Component {
 
   setSelected(item) {
     const { selected } = this.state;
-    if(selected !== item.text)
+
+    let hasChanged = false;
+
+    if(item.id && item.text) {
+      hasChanged = selected !== item.text;
+      
+    }
+    else {
+      hasChanged = selected !== item;
+    }
+
+    if(hasChanged) {
       this.props.onChange && this.props.onChange(item);
+    }
     
     this.setState({
-      selected: item.text,
+      selected: item.text ? item.text : item + '',
       visible: false,
     });
   }
@@ -106,10 +118,21 @@ class DropdownMenu extends Component {
     }
 
     const itemList = _.map(items, (item, i) => {
-      return <DropdownMenuItem key={item.id}
-                               text={item.text}
-                               onClick={!isLoading ? this.setSelected.bind(this, item) : null}
-             />
+
+      if(item.id) {
+        return <DropdownMenuItem key={item.id}
+                                 text={item.text}
+                                 onClick={!isLoading ? this.setSelected.bind(this, item) : null}
+               />
+      }
+      else {
+        return <DropdownMenuItem key={i}
+                                 text={item + ''}
+                                 onClick={!isLoading ? this.setSelected.bind(this, item) : null}
+               />
+      }
+      
+      
     });
     
     return (

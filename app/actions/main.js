@@ -1,5 +1,6 @@
 import {
   TOGGLE_NAVBAR,
+  TOGGLE_ADMIN_CONTEXT_MENU,
   CHANGE_PATH,
   CHANGE_TOPBAR_TITLE,
 } from '../constants/ActionTypes';
@@ -10,6 +11,12 @@ import {
 export function onToggleNavbar() {
   return {
     type: TOGGLE_NAVBAR,
+  }
+}
+
+export function onToggleAdminContextMenu() {
+  return {
+    type: TOGGLE_ADMIN_CONTEXT_MENU,
   }
 }
 

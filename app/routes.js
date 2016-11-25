@@ -34,6 +34,7 @@ export default (
 
     <Redirect from="dashboard" to="dashboard/summary" />
     <Redirect from="forms" to="forms/notice" />
+    <Redirect from="tools" to="tools/scraper" />
 
     <Route path="/" component={Main}>
 
@@ -53,9 +54,12 @@ export default (
         </Route>
         <Route path="location" component={Location} />
       </Route>
-
+      
       <Route path="users" component={Users} />
-      <Route path="scraper" component={Scraper} />
+
+      <Route path="tools">
+        <Route path="scraper" component={Scraper} />
+      </Route>
       <Route path="test" component={Test} />
     </Route>
     

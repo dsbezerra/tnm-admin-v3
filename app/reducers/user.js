@@ -1,70 +1,131 @@
 import {
-  UPDATE_USERNAME,
-  REQUEST_LOGIN,
-  REQUEST_LOGOUT,
-  LOGIN_FAILURE,
-  LOGIN_SUCCESSFUL,
-  LOGOUT_SUCCESSFUL,
-  LOGOUT_FAILURE,
+  REQUEST_USERS,
+  RECEIVE_USERS,
+  REQUEST_USERS_COUNT,
+  RECEIVE_USERS_COUNT,
+  REQUEST_NEWEST_USERS,
+  RECEIVE_NEWEST_USERS,
+  USERS_SELECT_CHANGE,
+  USERS_ALL_VIEW_STYLE_CHANGE,
+  USERS_ALL_SORT_CHANGE,
+  USERS_ALL_FILTER_CHANGE,
+  USERS_ALL_FILTER_CLEAR,
+  USERS_ALL_LIMIT_CHANGE,
 } from '../constants/ActionTypes';
 
 const initialState = {
-  username: '',
-  token: '',
-  isLogging: false,
-  isLoggedIn: false,
-  isLoggingOut: false,
+
+  newest: {
+    isFetching: false,
+    list: [],
+    numUsers: 0,
+  },
+  
+  list: [],
+  numUsers: 0,
+  isFetching: false,
+  isFetchingCount: false,
+
+  sort: {
+    property: 'activationDate',
+    order: 'DESC',
+  },
+  allViewStyle: 'table' /* Possible: table, grid */,
+
+  limit: 10,
+  filter: {},
+  selected: {}
 };
 
 const user = (state = initialState, action) => {
   switch(action.type) {
-
-    case UPDATE_USERNAME:
+    case REQUEST_USERS:
       return {
         ...state,
-        username: action.username
+        isFetching: true,
+      }
+
+    case RECEIVE_USERS:
+      return {
+        ...state,
+        isFetching: false,
+        list: action.users,
+      }
+
+    case REQUEST_USERS_COUNT:
+      return {
+        ...state,
+        isFetchingCount: true,
       }
       
-    case REQUEST_LOGIN:
+    case RECEIVE_USERS_COUNT:
       return {
         ...state,
-        isLogging: true,
+        numUsers: action.count,
+        isFetchingCount: false,
       }
 
-    case REQUEST_LOGOUT:
+    case REQUEST_NEWEST_USERS:
       return {
         ...state,
-        isLoggingOut: true,
+        newest: {
+          ...state.newest,
+          isFetching: true,
+        }
       }
       
-    case LOGIN_SUCCESSFUL:
+    case RECEIVE_NEWEST_USERS:
       return {
         ...state,
-        username: action.user.userId,
-        token: action.user.id,
-        isLoggedIn: true,
-        isLogging: false,
+        newest: {
+          ...state.newest,
+          isFetching: false,
+          list: action.users,
+          numUsers: action.users.length,
+        }
       }
 
-    case LOGIN_FAILURE:
+    case USERS_SELECT_CHANGE:
       return {
         ...state,
-        isLogging: false,
+        selected: action.user,
       }
-
-    case LOGOUT_SUCCESSFUL:
+      
+    case USERS_ALL_VIEW_STYLE_CHANGE:
       return {
         ...state,
-        isLoggedIn: false,
-        isLoggingOut: false,
+        allViewStyle: action.viewStyle,
       }
 
-    case LOGOUT_FAILURE:
+    case USERS_ALL_SORT_CHANGE:
       return {
         ...state,
-        isLoggingOut: false,
+        sort: action.sort,
       }
 
+    case USERS_ALL_FILTER_CHANGE:
+    {
+      const filter = { ...state.filter };
+      filter[action.filter.property] = action.filter.value;
+      
+      return {
+        ...state,
+        filter: filter, 
+      }
+    }
+
+    case USERS_ALL_FILTER_CLEAR:
+      return {
+        ...state,
+        filter: {}
+      }
+
+    case USERS_ALL_LIMIT_CHANGE:
+      return {
+        ...state,
+        limit: action.limit,
+      }
+      
     default:
       return state;
   }
