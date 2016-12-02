@@ -218,12 +218,17 @@ export function fetchCitiesFromState(id) {
   }
 }
 
-export function fetchCitiesCount() {
+export function fetchCitiesCount(filter) {
   return function(dispatch) {
 
     dispatch(requestCitiesCount());
 
-    return fetch('/locations/cities/count', {
+    let url = '/locations/cities/count';
+    if(filter) {
+      url += '?filter=' + JSON.stringify(filter);
+    }
+
+    return fetch(url, {
       method: 'GET',
       credentials: 'include',
     })

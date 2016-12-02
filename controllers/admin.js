@@ -46,7 +46,6 @@ export const login = (req, res) => {
 	}
 
         const redirect = req.query.r;
-        console.log(req);
         if(redirect) {
           return res.redirect(redirect);
         }

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import _ from 'lodash';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -70,6 +71,7 @@ class SearchLocation extends Component {
     const {
       pagination,
       fetchCities,
+      fetchCitiesCount,
     } = this.props;
 
     const {
@@ -112,8 +114,26 @@ class SearchLocation extends Component {
     });
   }
 
+  fetchCitiesCountWithFilter(props) {
+
+    if(!props)
+      return;
+    
+    const {
+      filter,
+      fetchCitiesCount,
+    } = props;
+
+    fetchCitiesCount({
+      where: {
+        ...filter,
+      }
+    });
+  }
+
   onApplyFilter() {
     this.fetchCitiesWithFilter(this.props);
+    this.fetchCitiesCountWithFilter(this.props);
   }
   
   onClearFilter() {
@@ -222,12 +242,13 @@ class SearchLocation extends Component {
       pagination,
       limit,
       numCities,
+      cities,
       onChangePage,
     } = this.props;
     
     return (
       <SimplePagination currentPage={pagination.current}
-                        totalItems={numCities}
+                        totalItems={cities.length < limit ? cities.length : numCities}
                         itemsPerPage={limit}
                         onNext={() => { onChangePage(1); }}
                         onPrevious={() => { onChangePage(-1); }}

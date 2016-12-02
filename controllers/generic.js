@@ -154,7 +154,7 @@ export const count = (model, req, res) => {
   
   const { token } = req.session.user;
 
-  const parameters = buildParameters(modelName, token, null);
+  const parameters = buildParameters(modelName, token, req.query.filter);
   parameters.endpoint += '/count';
   
   makeApiRequest(parameters, (err, response) => {
