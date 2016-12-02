@@ -1,5 +1,6 @@
 import express from 'express';
 import {
+  count,
   getAll,
   getById,
   updateById,
@@ -102,6 +103,14 @@ locations.delete('/cities/:id', (req, res) => {
  */
 locations.delete('/states/:id', (req, res) => {
   deleteById(STATE_MODEL, req, res)
+});
+
+/**
+ * GET /locations/cities/count
+ * Get count of cities in database
+ */
+locations.get('/cities/count', (req, res) => {
+  count('City', req, res);
 });
 
 export default locations;

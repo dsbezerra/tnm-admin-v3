@@ -28,8 +28,7 @@ import {
 } from '../../../components';
 
 import DropdownMenu from '../../../components/DropdownMenu';
-import Pagination from '../../../components/Pagination';
-import Page from '../../../components/Pagination/Page';
+import SimplePagination from '../../../components/Pagination/SimplePagination';
 
 class SearchLocation extends Component {
 
@@ -39,7 +38,7 @@ class SearchLocation extends Component {
       resetFilter: false,
     };
     
-    this.onPageClick = this.onPageClick.bind(this);
+    
     this.onApplyFilter = this.onApplyFilter.bind(this);
     this.onClearFilter = this.onClearFilter.bind(this);
 
@@ -55,42 +54,69 @@ class SearchLocation extends Component {
       numCities,
       numStates,
       fetchCities,
+      fetchCitiesCount,
       fetchStates
     } = this.props;
 
     if(cities && numCities === 0) {
-      fetchCities({
-        order: `${sort.property} ${sort.order}`,
-        limit: limit,
-        include: 'estados',
-      });
+      this.fetchCitiesWithFilter(this.props);
     }
 
     if(states && numStates === 0) {
       fetchStates({ order: 'nome ASC'  });
     }
+
+    fetchCitiesCount();
   }
 
-  onPageClick(page) {
-    console.log(page);
-  }
+  componentWillReceiveProps(nextProps) {
+    const {
+      pagination,
+      fetchCities,
+    } = this.props;
 
-  onApplyFilter() {
     const {
       sort,
       filter,
       limit,
+    } = nextProps;
+
+    if(limit != this.props.limit) {
+      this.fetchCitiesWithFilter(nextProps);
+    }
+
+    if(pagination.current != nextProps.pagination.current) {
+      this.fetchCitiesWithFilter(nextProps);
+    }
+  }
+
+  fetchCitiesWithFilter(props) {
+
+    if(!props)
+      return;
+    
+    const {
+      sort,
+      limit,
+      filter,
+      pagination,
+      
       fetchCities
-    } = this.props;
+    } = props;
 
     fetchCities({
       order: `${sort.property} ${sort.order}`,
       limit: limit,
+      skip: props.pagination.current * limit,
       where: {
         ...filter,
       },
-      include: 'estados',
+      include: 'estados'
     });
+  }
+
+  onApplyFilter() {
+    this.fetchCitiesWithFilter(this.props);
   }
   
   onClearFilter() {
@@ -193,6 +219,25 @@ class SearchLocation extends Component {
     );
   }
 
+  renderPagination() {
+
+    const {
+      pagination,
+      limit,
+      numCities,
+      onChangePage,
+    } = this.props;
+    
+    return (
+      <SimplePagination currentPage={pagination.current}
+                        totalItems={numCities}
+                        itemsPerPage={limit}
+                        onNext={() => { onChangePage(1); }}
+                        onPrevious={() => { onChangePage(-1); }}
+      />
+    );
+  }
+
   render() {
 
     const {
@@ -215,10 +260,14 @@ class SearchLocation extends Component {
         
         { isFetchingCities ?
           <CircularLoader size="small" />
-        : <LocationTable cities={cities}
-                         sort={sort}
-                         onHeaderClick={this.onHeaderClick}
-          />
+        :
+          <div>
+            <LocationTable cities={cities}
+                           sort={sort}
+                           onHeaderClick={this.onHeaderClick}
+            />
+            {this.renderPagination()}
+          </div>
         }
 
         
@@ -246,9 +295,11 @@ const mapStateToProps = (reduxState) => {
 const mapDispatchToProps = (dispatch) => {
   const {
     fetchCities,
+    fetchCitiesCount,
     fetchStates,
     
     onChangeSort,
+    onChangePage,
     onUpdateSearchLimit,
     onUpdateSearchFilter,
     onClearSearchFilter,
@@ -257,9 +308,11 @@ const mapDispatchToProps = (dispatch) => {
 
   const actions = {
     fetchCities,
+    fetchCitiesCount,
     fetchStates,
 
     onChangeSort,
+    onChangePage,
     onUpdateSearchLimit,
     onUpdateSearchFilter,
     onClearSearchFilter,

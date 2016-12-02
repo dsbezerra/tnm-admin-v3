@@ -12,14 +12,18 @@ import {
   SEARCH_LOCATION_FILTER_CHANGE,
   SEARCH_LOCATION_FILTER_CLEAR,
   SEARCH_LOCATION_SORT_CHANGE,
+  SEARCH_LOCATION_PAGE_CHANGE,
   
   REQUEST_INSERT_LOCATION,
   REQUEST_CITIES,
   REQUEST_CITIES_FROM_STATE,
-  REQUEST_STATES,
+  REQUEST_CITIES_COUNT,
   RECEIVE_CITIES,
   RECEIVE_CITIES_FROM_STATE,
-  RECEIVE_STATES
+  RECEIVE_CITIES_COUNT,
+  
+  REQUEST_STATES,
+  RECEIVE_STATES,
 } from '../constants/ActionTypes';
 
 const cityInitialState = {
@@ -47,6 +51,9 @@ const editIntialState = {
 }
 
 const searchInitialState = {
+  pagination: {
+    current: 0,
+  },
   sort: {
     property: 'nome',
     order: 'ASC',
@@ -150,6 +157,19 @@ const search = (state = searchInitialState, action) => {
           sort: action.sort,
         }
       }
+
+      
+    case SEARCH_LOCATION_PAGE_CHANGE:
+      return {
+        ...state,
+        search: {
+          ...state.search,
+          pagination: {
+            ...state.search.pagination,
+            current: state.search.pagination.current + action.dir,
+          }
+        }
+      }
   }
 }
 
@@ -170,8 +190,27 @@ const city = (state = cityInitialState, action) => {
         city: {
           ...state.city,
           list: action.cities,
-          numCities: action.cities.length,
           isFetching: false,
+        }
+      }
+
+      
+    case REQUEST_CITIES_COUNT:
+      return {
+        ...state,
+        city: {
+          ...state.city,
+          isFetchingCount: true,
+        }
+      }
+
+    case RECEIVE_CITIES_COUNT:
+      return {
+        ...state,
+        city: {
+          ...state.city,
+          numCities: action.count,
+          isFetchingCount: false,
         }
       }
   }
@@ -216,6 +255,7 @@ const location = (locationState = initialState, action) => {
     case SEARCH_LOCATION_FILTER_CHANGE:
     case SEARCH_LOCATION_FILTER_CLEAR:
     case SEARCH_LOCATION_SORT_CHANGE:
+    case SEARCH_LOCATION_PAGE_CHANGE:
       return search(locationState, action);
     
     case LOCATION_ACTION_CHANGE:
@@ -226,6 +266,8 @@ const location = (locationState = initialState, action) => {
 
     case REQUEST_CITIES:
     case RECEIVE_CITIES:
+    case REQUEST_CITIES_COUNT:
+    case RECEIVE_CITIES_COUNT:
       return city(locationState, action);
 
     case REQUEST_STATES:

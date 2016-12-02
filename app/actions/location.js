@@ -1,29 +1,42 @@
 import fetch from 'isomorphic-fetch';
 
 import {
+  LOCATION_ACTION_CHANGE,
+  
+  INSERT_LOCATION_CHANGE,
+  INSERT_LOCATION,
   INSERT_LOCATION_SUCCESS,
   INSERT_LOCATION_FAIL,
-  INSERT_LOCATION_CHANGE,
-  EDIT_CITY_CHANGE,
-  EDIT_STATE_CHANGE,
+
   SEARCH_LOCATION_LIMIT_CHANGE,
   SEARCH_LOCATION_FILTER_CHANGE,
   SEARCH_LOCATION_FILTER_CLEAR,
   SEARCH_LOCATION_SORT_CHANGE,
+  SEARCH_LOCATION_PAGE_CHANGE,
+  
   REQUEST_INSERT_LOCATION,
   REQUEST_CITIES,
   REQUEST_CITIES_FROM_STATE,
-  REQUEST_STATES,
+  REQUEST_CITIES_COUNT,
   RECEIVE_CITIES,
   RECEIVE_CITIES_FROM_STATE,
+  RECEIVE_CITIES_COUNT,
+  
+  REQUEST_STATES,
   RECEIVE_STATES,
-  LOCATION_ACTION_CHANGE
 } from '../constants/ActionTypes';
 
 export function onChangeSort(sort) {
   return {
     type: SEARCH_LOCATION_SORT_CHANGE,
     sort,
+  }
+}
+
+export function onChangePage(dir) {
+  return {
+    type: SEARCH_LOCATION_PAGE_CHANGE,
+    dir,
   }
 }
 
@@ -114,6 +127,19 @@ export function receiveCitiesFromState(cities) {
   }
 }
 
+export function requestCitiesCount() {
+  return {
+    type: REQUEST_CITIES_COUNT
+  }
+}
+
+export function receiveCitiesCount(count) {
+  return {
+    type: RECEIVE_CITIES_COUNT,
+    count,
+  }
+}
+
 export function requestInsertLocation() {
   return {
     type: REQUEST_INSERT_LOCATION,
@@ -187,6 +213,24 @@ export function fetchCitiesFromState(id) {
     .then(json => {
       if(json.success) {
         dispatch(receiveCitiesFromState(json.data));
+      }
+    });
+  }
+}
+
+export function fetchCitiesCount() {
+  return function(dispatch) {
+
+    dispatch(requestCitiesCount());
+
+    return fetch('/locations/cities/count', {
+      method: 'GET',
+      credentials: 'include',
+    })
+    .then(response => response.json())
+    .then(json => {
+      if(json.success) {
+        dispatch(receiveCitiesCount(json.data.count));
       }
     });
   }
