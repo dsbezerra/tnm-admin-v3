@@ -47,13 +47,10 @@ class SearchLocation extends Component {
 
   componentDidMount() {
     const {
-      sort,
-      limit,
       cities,
       states,
       numCities,
       numStates,
-      fetchCities,
       fetchCitiesCount,
       fetchStates
     } = this.props;
@@ -107,7 +104,7 @@ class SearchLocation extends Component {
     fetchCities({
       order: `${sort.property} ${sort.order}`,
       limit: limit,
-      skip: props.pagination.current * limit,
+      skip: pagination.current * limit,
       where: {
         ...filter,
       },
