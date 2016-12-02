@@ -21,27 +21,8 @@ function LocationTable(props) {
     { name: 'Cidade', sort: 'nome' },
     { name: 'Estado', sort: 'estados.nome' }
   ];
-
-  let sortedList = cities;
-  if(sort) {
-    sortedList = _.sortBy(cities, [function(c) {
-      const dotIndex = sort.indexOf('.');
-      if(dotIndex > -1) {
-        const splitted = sort.split('.');
-        var index = 0, o = c;
-
-        while(o != null && index < splitted.length) {
-          o = o[splitted[index++]];
-        }
-
-        return o;
-      }
-      
-      return c[sort]; 
-    }]);
-  }
   
-  const locationList = _.map(sortedList, (city, i) => {
+  const locationList = _.map(cities, (city, i) => {
     return (
       <TableRow key={city.id}>
         <TableCell className="city" text={city.nome} />
@@ -60,14 +41,13 @@ function LocationTable(props) {
         <TableHead>
           <TableRow>
             <TableHeader header="Cidade"
-                         active={props.sort === 'nome'}
+                         active={props.sort.property === 'nome'}
                          className="city"
+                         order={sort.order}
                          onClick={props.onHeaderClick.bind(this, 'nome')}
             />
             <TableHeader header="Estado"
-                         active={props.sort === 'estados.nome'}
-                         className="state"
-                         onClick={props.onHeaderClick.bind(this, 'estados.nome')}
+                         className="state notClickable"
             />
             <TableHeader header="" /> 
           </TableRow>

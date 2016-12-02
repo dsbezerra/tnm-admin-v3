@@ -1,10 +1,18 @@
+import _ from 'lodash';
+
 import {
   LOCATION_ACTION_CHANGE,
+  
   INSERT_LOCATION_CHANGE,
   INSERT_LOCATION,
   INSERT_LOCATION_SUCCESS,
   INSERT_LOCATION_FAIL,
+
+  SEARCH_LOCATION_LIMIT_CHANGE,
+  SEARCH_LOCATION_FILTER_CHANGE,
+  SEARCH_LOCATION_FILTER_CLEAR,
   SEARCH_LOCATION_SORT_CHANGE,
+  
   REQUEST_INSERT_LOCATION,
   REQUEST_CITIES,
   REQUEST_CITIES_FROM_STATE,
@@ -39,11 +47,12 @@ const editIntialState = {
 }
 
 const searchInitialState = {
-  sort: 'nome',
-  filter: {
-    show: 25,
-    state: '',
-  }
+  sort: {
+    property: 'nome',
+    order: 'ASC',
+  },
+  limit: 10,
+  filter: {}
 }
 
 const initialState = {
@@ -103,6 +112,36 @@ const edit = (state = editIntialState, action) => {
 
 const search = (state = searchInitialState, action) => {
   switch(action.type) {
+
+    case SEARCH_LOCATION_LIMIT_CHANGE:
+      return {
+        ...state,
+        search: {
+          ...state.search,
+          limit: action.limit,
+        }
+      }
+      
+    case SEARCH_LOCATION_FILTER_CHANGE:
+      return {
+        ...state,
+        search: {
+          ...state.search,
+          filter: _.set( {...state.search.filter },
+                         action.filter.property,
+                         action.filter.value),
+        }
+      }
+      
+    case SEARCH_LOCATION_FILTER_CLEAR:
+      return {
+        ...state,
+        search: {
+          ...state.search,
+          filter: searchInitialState.filter,
+        }
+      }
+      
     case SEARCH_LOCATION_SORT_CHANGE:
       return {
         ...state,
@@ -172,6 +211,10 @@ const location = (locationState = initialState, action) => {
     case REQUEST_INSERT_LOCATION:
       return insert(locationState, action);
 
+
+    case SEARCH_LOCATION_LIMIT_CHANGE:
+    case SEARCH_LOCATION_FILTER_CHANGE:
+    case SEARCH_LOCATION_FILTER_CLEAR:
     case SEARCH_LOCATION_SORT_CHANGE:
       return search(locationState, action);
     

@@ -6,6 +6,9 @@ import {
   INSERT_LOCATION_CHANGE,
   EDIT_CITY_CHANGE,
   EDIT_STATE_CHANGE,
+  SEARCH_LOCATION_LIMIT_CHANGE,
+  SEARCH_LOCATION_FILTER_CHANGE,
+  SEARCH_LOCATION_FILTER_CLEAR,
   SEARCH_LOCATION_SORT_CHANGE,
   REQUEST_INSERT_LOCATION,
   REQUEST_CITIES,
@@ -17,7 +20,7 @@ import {
   LOCATION_ACTION_CHANGE
 } from '../constants/ActionTypes';
 
-export function searchSortChange(sort) {
+export function onChangeSort(sort) {
   return {
     type: SEARCH_LOCATION_SORT_CHANGE,
     sort,
@@ -28,6 +31,26 @@ export function onUpdateAction(action) {
   return {
     type: LOCATION_ACTION_CHANGE,
     action,
+  }
+}
+
+export function onUpdateSearchLimit(limit) {
+  return {
+    type: SEARCH_LOCATION_LIMIT_CHANGE,
+    limit,
+  }
+}
+
+export function onUpdateSearchFilter(filter) {
+  return {
+    type: SEARCH_LOCATION_FILTER_CHANGE,
+    filter,
+  }
+}
+
+export function onClearSearchFilter() {
+  return {
+    type: SEARCH_LOCATION_FILTER_CLEAR,
   }
 }
 

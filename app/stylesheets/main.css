@@ -3912,6 +3912,16 @@ nav {
   cursor: pointer;
 }
 
+.tnm-table th.notClickable {
+  cursor: default;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.tnm-table th:hover.notClickable {
+  cursor: default;
+  color: rgba(255, 255, 255, 0.5);
+}
+
 .tnm-table tr {
   color: #eee;
   font-size: 14px;

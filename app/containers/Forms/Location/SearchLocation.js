@@ -9,6 +9,8 @@ import * as locationActions from '../../../actions/location';
 import LocationTable from '../../../components/Location/LocationTable';
 import EditLocation from './EditLocation';
 
+import { toggleSortOrder } from '../../../utils/FilterUtils';
+
 import {
   Button,
   CircularLoader,
@@ -18,6 +20,13 @@ import {
   TextField,
 } from '../../../components/UI';
 
+import {
+  Filter,
+  FilterGroup,
+  FilterField,
+  FilterButtons,
+} from '../../../components';
+
 import DropdownMenu from '../../../components/DropdownMenu';
 import Pagination from '../../../components/Pagination';
 import Page from '../../../components/Pagination/Page';
@@ -26,15 +35,21 @@ class SearchLocation extends Component {
 
   constructor(props) {
     super(props);
-
-    this.onUpdateShowFilter = this.onUpdateShowFilter.bind(this);
-    this.onUpdateStateFilter = this.onUpdateStateFilter.bind(this);
-
+    this.state = {
+      resetFilter: false,
+    };
+    
     this.onPageClick = this.onPageClick.bind(this);
+    this.onApplyFilter = this.onApplyFilter.bind(this);
+    this.onClearFilter = this.onClearFilter.bind(this);
+
+    this.onHeaderClick = this.onHeaderClick.bind(this);
   }
 
   componentDidMount() {
     const {
+      sort,
+      limit,
       cities,
       states,
       numCities,
@@ -44,7 +59,11 @@ class SearchLocation extends Component {
     } = this.props;
 
     if(cities && numCities === 0) {
-      fetchCities({ order: 'nome ASC', include: 'estados' });
+      fetchCities({
+        order: `${sort.property} ${sort.order}`,
+        limit: limit,
+        include: 'estados',
+      });
     }
 
     if(states && numStates === 0) {
@@ -52,16 +71,65 @@ class SearchLocation extends Component {
     }
   }
 
-  onUpdateStateFilter() {
-
-  }
-
-  onUpdateShowFilter() {
-
-  }
-
   onPageClick(page) {
     console.log(page);
+  }
+
+  onApplyFilter() {
+    const {
+      sort,
+      filter,
+      limit,
+      fetchCities
+    } = this.props;
+
+    fetchCities({
+      order: `${sort.property} ${sort.order}`,
+      limit: limit,
+      where: {
+        ...filter,
+      },
+      include: 'estados',
+    });
+  }
+  
+  onClearFilter() {
+    const { resetFilter } = this.state;
+    this.setState({
+      resetFilter: !resetFilter,
+    });
+
+    this.props.onClearSearchFilter();
+  }
+
+  onHeaderClick(property) {
+
+    if(!property)
+      return;
+
+    const {
+      sort,
+      limit,
+      filter,
+      fetchCities,
+      onChangeSort,
+    } = this.props;
+
+    let order = sort.property === property ? toggleSortOrder(sort.order) : 'DESC';
+   
+    onChangeSort({
+      property: property,
+      order: order,
+    });
+
+    fetchCities({
+      order: `${property} ${order}`,
+      limit: limit,
+      where: {
+        ...filter,
+      },
+      include: 'estados'
+    });
   }
 
   renderFilter() {
@@ -69,6 +137,9 @@ class SearchLocation extends Component {
     const {
       isFetchingStates,
       states,
+
+      onUpdateSearchLimit,
+      onUpdateSearchFilter,
     } = this.props;
     
     const stateList = _.map(states, (state, i) => {
@@ -78,40 +149,47 @@ class SearchLocation extends Component {
       }
     });
 
-    const showItems = _.map([25, 50, 100, -1], (item, i) => {
+    const showItems = _.map([10, 25, 50], (item, i) => {
       return {
         id: item,
-        text: item > -1 ? parseInt(item) : 'Todos'
+        text: item + '',
       }
     });
     
     return (
-      <div className="tnm-filter">
-        <Header text="Filtro" />
-
-        <div className="tnm-filter-group">
-
-          <div className="tnm-filter-field">
-
+      <Filter key={this.state.resetFilter}>
+        <FilterGroup>
+          <FilterField>
             <Label text="Mostrar"/>
             <DropdownMenu items={showItems}
-                          placeholder="25"
-                          onChange={this.onUpdateShowNumber}
-            /> 
-          </div>
+                          placeholder="10"
+                          onChange={(value) => {
+                              onUpdateSearchLimit(value.id)
+                            }}
+            />
+          </FilterField>
           
-          <div className="tnm-filter-field">
-
+          <FilterField>
             <Label text="Estado"/>
             <DropdownMenu items={stateList}
                           placeholder="Selecione um estado"
                           isLoading={isFetchingStates}
-                          onChange={this.onUpdateStateFilter}
+                          onChange={(value) => {
+                              onUpdateSearchFilter({
+                                property: 'estadoId',
+                                value: value.id,
+                              })
+                            }}
             /> 
-          </div>
-        </div>
-      </div>
-      
+          </FilterField>
+
+          <FilterButtons onApply={this.onApplyFilter}
+                         onClear={this.onClearFilter}
+          />
+        </FilterGroup>
+        
+        
+      </Filter>      
     );
   }
 
@@ -139,7 +217,7 @@ class SearchLocation extends Component {
           <CircularLoader size="small" />
         : <LocationTable cities={cities}
                          sort={sort}
-                         onHeaderClick={(_sort) => { searchSortChange(_sort) }}
+                         onHeaderClick={this.onHeaderClick}
           />
         }
 
@@ -155,9 +233,9 @@ const mapStateToProps = (reduxState) => {
   const { city, state } = location;
   
   return {
+    ...location.search,
     states: state.list,
     cities: city.list,
-    ...location.search,
     isFetchingStates: state.isFetching,
     isFetchingCities: city.isFetching,
     numCities: city.numCities,
@@ -169,15 +247,25 @@ const mapDispatchToProps = (dispatch) => {
   const {
     fetchCities,
     fetchStates,
-    searchSortChange
+    
+    onChangeSort,
+    onUpdateSearchLimit,
+    onUpdateSearchFilter,
+    onClearSearchFilter,
+    
   } = locationActions;
 
   const actions = {
     fetchCities,
     fetchStates,
+
+    onChangeSort,
+    onUpdateSearchLimit,
+    onUpdateSearchFilter,
+    onClearSearchFilter,
+    
     showModalWithComponent,
     closeModal,
-    searchSortChange
   };
 
   return bindActionCreators(actions, dispatch);
