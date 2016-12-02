@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 
 function Icon(props) {
 
-  const { name } = props;
+  const { name, tooltipText } = props;
 
   let clazz = 'material-icons tnm-icon';
   

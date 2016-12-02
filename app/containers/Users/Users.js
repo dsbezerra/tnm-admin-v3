@@ -34,6 +34,7 @@ import {
 import {
   CircularLoader,
   Divider,
+  ActionHeader,
   Header,
   Icon,
   Label,
@@ -51,6 +52,8 @@ import {
   UserCard,
   UserTable,
 } from '../../components';
+
+import SimplePagination from '../../components/Pagination/SimplePagination';
 
 import HorizontalScroller from '../../components/Scroller/HorizontalScroller';
 import RightDrawer from '../../components/Drawer/RightDrawer';
@@ -83,11 +86,20 @@ class Users extends Component {
       
       users,
       fetchUsers,
+      fetchUsersCount,
       
       location,
       onChangePath,
       onChangeTopBarTitle,
     } = this.props;
+
+    fetchUsersCount({
+      order: `${sort.property} ${sort.order}`,
+      limit: limit,
+      where: {
+        ...filter,
+      }
+    });
 
     if(newest.list && newest.list.length === 0) {
       fetchNewestUsers({
@@ -113,7 +125,41 @@ class Users extends Component {
       onChangePath(location.pathname);
   }
 
-  componentWillReceiveProps(nextProps) {}
+  componentWillReceiveProps(nextProps) {
+    const {
+      currentPage,
+      fetchUsers,
+      fetchUsersCount
+    } = this.props;
+
+    const {
+      sort,
+      filter,
+      limit,
+    } = nextProps;
+
+    if(limit !== this.props.limit) {
+      fetchUsers({
+        order: `${sort.property} ${sort.order}`,
+        limit: limit,
+        skip: nextProps.currentPage * limit,
+        where: {
+          ...filter,
+        }
+      });
+    }
+    
+    if(currentPage != nextProps.currentPage) {
+      fetchUsers({
+        order: `${sort.property} ${sort.order}`,
+        limit: limit,
+        skip: nextProps.currentPage * limit,
+        where: {
+          ...filter,
+        }
+      });
+    }
+  }
 
   onDrawerClose() {
     const { onUsersSelectChange } = this.props;
@@ -316,7 +362,7 @@ class Users extends Component {
         <FilterGroup>
           <FilterField>
             <Label text="Mostrar" />
-            <DropdownMenu items={[10, 50, 100]}
+            <DropdownMenu items={[10, 25, 50]}
                           selected={limit + ''}
                           placeholder="Mostrar"
                           onChange={(value) => {
@@ -358,6 +404,25 @@ class Users extends Component {
     );
   }
 
+  renderPagination() {
+    const {
+      currentPage,
+      users,
+      numUsers,
+      limit,
+      onAllPageChange,
+    } = this.props;
+    
+    return (
+      <SimplePagination currentPage={currentPage}
+                        totalItems={users.length < limit ? users.length : numUsers}
+                        itemsPerPage={limit}
+                        onNext={() => { onAllPageChange(1); }}
+                        onPrevious={() => { onAllPageChange(-1); }}
+      />
+    );
+  }
+
   /**
    * Renders users table or card view
    */
@@ -391,7 +456,7 @@ class Users extends Component {
       });
 
       component = (
-        <div>
+        <div style={{display: 'inline-block'}}>
           {cards}
         </div>
       );
@@ -404,10 +469,12 @@ class Users extends Component {
                          duration={300}
                          easing="ease-out"
                          runOnMount>
-        {component}
+        <div>
+          {component}
+          {this.renderPagination()}
+        </div>
       </VelocityComponent>
     );
-    
   }
 
   /**
@@ -464,25 +531,25 @@ class Users extends Component {
       allViewStyle,
       onAllViewStyleChange,
     } = this.props;
+
+    const viewStyles = [
+      {
+        id: 'table',
+        icon: 'view_list'
+      },
+      {
+        id: 'grid',
+        icon: 'view_module'
+      }
+    ];
     
     return (
       <div>
-        <div className="tnm-header-actions">
-          <div className="tnm-horizontal-layout vertical-centered spaced">
-            <Header text="Todos" />
-            <ul className="tnm-header-actions-list">
-              <li className={allViewStyle === 'table' ? 'active' : ''}
-                  onClick={() => { onAllViewStyleChange('table') }}>
-                <Icon name="view_list" />
-              </li>
-              <li className={allViewStyle === 'grid' ? 'active' : ''}
-                  onClick={() => { onAllViewStyleChange('grid') }}>
-                <Icon name="view_module" />
-              </li>
-            </ul>
-          </div>
-          <Divider />
-        </div>
+        <ActionHeader header="Todos"
+                      active={allViewStyle}
+                      viewStyles={viewStyles}
+                      onViewStyleClick={onAllViewStyleChange}
+        />
         
         {isFetching ? <CircularLoader size="small" /> : this.renderUsers() }
          
@@ -504,9 +571,6 @@ class Users extends Component {
             <Header text="Novos" />
             <Divider />
             {this.renderNewUsersSection()}
-
-            <Divider />
-
             {this.renderFilter()}
             {this.renderAllUsersSection()}            
           </div>
@@ -524,7 +588,8 @@ const mapStateToProps = (state) => {
 
   return {
     newest: user.newest,
-    
+
+    currentPage: user.currentPage,
     users: user.list,
     numUsers: user.numUsers,
     isFetching: user.isFetching,
@@ -540,6 +605,7 @@ const mapDispatchToProps = (dispatch) => {
 
   const {
     fetchUsers,
+    fetchUsersCount,
     fetchNewestUsers,
     onUsersSelectChange,
     onAllViewStyleChange,
@@ -547,10 +613,12 @@ const mapDispatchToProps = (dispatch) => {
     onAllFilterChange,
     onAllFilterClear,
     onAllLimitChange,
+    onAllPageChange
   } = usersActions;
 
   const actions = {
     fetchUsers,
+    fetchUsersCount,
     fetchNewestUsers,
     onUsersSelectChange,
     onAllViewStyleChange,
@@ -558,6 +626,7 @@ const mapDispatchToProps = (dispatch) => {
     onAllFilterChange,
     onAllFilterClear,
     onAllLimitChange,
+    onAllPageChange,
     onChangeTopBarTitle,
   };
 

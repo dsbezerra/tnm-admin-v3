@@ -1,10 +1,7 @@
-
 import fetch from 'node-fetch';
 
 import express from 'express';
 import _ from 'lodash';
-
-import NeuralApi from './neuralapi';
 
 import {
   generateResponse,
@@ -46,6 +43,31 @@ scrapers.post('/run', (req, res) => {
       }
          
     });
+});
+
+scrapers.get('/:id/pending', (req, res) => {
+  const id = req.params.id;
+
+  if(id) {
+
+    const options = {
+      method: 'GET',
+      headers: DEFAULT_HEADERS,
+    };
+
+    fetch(BASE_URI + '/scrapers/pending/' + id, options)
+      .then(response => response.json())
+      .then(json => {
+        res.send(json);
+      });
+  }
+  else {
+    return res.send({
+      success: false,
+      message: 'Invalid ID.'
+    })
+  }
+  
 });
 
 scrapers.get('/progress/:id', (req, res) => {

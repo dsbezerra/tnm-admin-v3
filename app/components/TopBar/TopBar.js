@@ -35,7 +35,7 @@ export default function TopBar(props) {
   return (
     <header className="tnm-top-bar">
       <div className="tnm-top-bar-inner">
-        <Icon name="menu" onClick={props.onToggleNavbar}/>
+        <Icon name="menu" className="menu" onClick={props.onToggleNavbar}/>
         <div className="tnm-page-title">
           {title}
         </div>

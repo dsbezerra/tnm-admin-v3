@@ -3,6 +3,7 @@ export CheckBox from './CheckBox';
 export Icon from './Icon';
 export SpinnerIcon from './Icon/SpinnerIcon';
 export Header from './Header';
+export ActionHeader from './Header/ActionHeader';
 export SlashHeader from './Header/SlashHeader';
 
 export Label from './Label';

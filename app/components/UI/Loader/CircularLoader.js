@@ -2,12 +2,19 @@ import React from 'react';
 
 const SIZES =
   [
+    'tiny',
     'small',
     'normal',
-    'big'
+    'big',
+    'huge',
   ];
 
 const Sizes = {
+  tiny: {
+    style: {
+      fontSize: '20px'
+    }
+  },
   small: {
     style: {
       fontSize: '50px',
@@ -21,6 +28,11 @@ const Sizes = {
   big: {
     style: {
       fontSize: '150px'
+    }
+  },
+  huge: {
+    style: {
+      fontSize: '200px'
     }
   }
 };

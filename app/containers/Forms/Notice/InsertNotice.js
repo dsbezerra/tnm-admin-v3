@@ -30,7 +30,6 @@ import {
   SearchableTextField,
 } from '../../../components/UI';
 
-
 class InsertNotice extends Component {
 
   constructor(props) {
@@ -145,8 +144,8 @@ class InsertNotice extends Component {
             <Label text="Órgão" />
             <SearchableTextField className="dark"
                                  isLoading={isSearchingAgencies}
-                                 onChange={this.onUpdateAgencySearch}
                                  onItemClick={this.onUpdateAgency}
+                                 onChange={this.onUpdateAgencySearch}
             >
               {agencyList}
             </SearchableTextField>

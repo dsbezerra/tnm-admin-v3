@@ -24,6 +24,7 @@ import Location from './containers/Forms/Location';
 
 import Users from './containers/Users';
 import Scraper from './containers/Scraper';
+import NeuralNetwork from './containers/NeuralNetwork';
 
 import Test from './components/Test';
 
@@ -59,6 +60,7 @@ export default (
 
       <Route path="tools">
         <Route path="scraper" component={Scraper} />
+        <Route path="neural-network" component={NeuralNetwork} />
       </Route>
       <Route path="test" component={Test} />
     </Route>

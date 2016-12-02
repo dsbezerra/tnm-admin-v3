@@ -13,6 +13,13 @@ class TextField extends Component {
   }
   
   componentDidMount() {
+    const { inputField } = this.refs;
+    if(inputField) {
+      const { value } = this.props;
+      if(value) {
+        inputField.value = value;
+      }
+    }
   }
 
   onFocus() {
@@ -84,7 +91,7 @@ class TextField extends Component {
              className={clazz}
              id={this.props.id}
              name={this.props.name}
-             ref={this.props.name}
+             ref="inputField"
              style={this.props.style}
              onChange={this.onChange}
              onBlur={this.onBlur}

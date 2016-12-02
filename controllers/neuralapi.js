@@ -7,19 +7,19 @@ class NeuralApi {
 
   /**
    * POST /process
-   * Processa a entrada e response com prováveis
+   * Processa a entrada e responde com prováveis
    * ids para o segmento
    */
-  static processInput(inputArray, callback) {
-    if(typeof inputArray === 'undefiend')
+  static processInput(input, callback) {
+    if(typeof input === 'undefiend')
       return callback(new Error('Input Array is invalid!'));
     
-    if(typeof inputArray === 'string') {
-      inputArray = [ inputArray ]
+    if(typeof input === 'string') {
+      input = [ input ]
     }
     
     const body = {
-      input: inputArray
+      input: input
     };
     
     const options = {

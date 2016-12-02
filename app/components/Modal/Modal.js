@@ -10,12 +10,17 @@ export default function Modal(props) {
   const {
     title,
     buttons,
-    content
+    content,
+    className
   } = props;
+
+  let clazz = 'tnm-modal';
+  if(className)
+    clazz += ' ' + className;
 
   return (
     <div className="tnm-modal-wrapper">
-      <div className="tnm-modal">
+      <div className={clazz}>
         <ModalHeader title={title} />
         <ModalContent>
           {props.children}

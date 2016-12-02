@@ -53,7 +53,7 @@ export const formatDate = (date) => {
 }
 
 /* Formats the amount to R$ value */
-export const formatAmount = (amount) => {
+export const formatAmount = (amount) => {  
   if(amount === 0) {
     return 'Não informado';
   }

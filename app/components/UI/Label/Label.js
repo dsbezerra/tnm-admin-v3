@@ -28,13 +28,13 @@ function Label(props) {
     <label htmlFor={props.forName}
            className={clazz}
            style={style}>
-      {text}
+      {text || props.children}
     </label>
   );
 }
 
 Label.propTypes = {
-  text: PropTypes.string.isRequired
+  text: PropTypes.string
 }
 
 export default Label;

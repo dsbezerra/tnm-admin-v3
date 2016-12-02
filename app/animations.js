@@ -6,6 +6,13 @@ export const slideUpFadeIn = {
   }
 };
 
+export const slideDownFadeIn = {
+  animation: {
+    opacity: [1, 0],
+    translateY: ['0%', '-10%']
+  }
+}
+
 export const slideLeftFadeIn = {
   animation: {
     opacity: [1, 0],

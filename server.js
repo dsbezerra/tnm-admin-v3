@@ -20,6 +20,7 @@ import * as summaryController from './controllers/summary';
 import * as plivoController from './controllers/plivo';
 
 import {
+  neural,
   scrapers,
 } from './controllers';
 
@@ -98,6 +99,7 @@ app.use('/segments', segments);
 app.use('/locations', locations);
 app.use('/installations', installations);
 
+app.use('/neural', neural);
 app.use('/scrapers', scrapers);
 
 app.get('/metrics/database', summaryController.getDatabaseMetrics);

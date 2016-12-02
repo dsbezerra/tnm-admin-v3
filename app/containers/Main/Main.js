@@ -131,6 +131,11 @@ class Main extends Component {
       activePath,
       onChangePath
     };
+
+    /*const isDesktop = true;
+    const style = {
+      margin: isDesktop ? '0px 0px 400px 0px'
+    }*/
     
     return (
 
@@ -145,14 +150,7 @@ class Main extends Component {
           </div>
           
           </div> : null}
-          
-          <TopBar title={topBarTitle}
-                  username={username}
-                  isAdminContextMenuVisible={isAdminContextMenuVisible}
-                  onLogout={this.onLogout}
-                  onToggleAdminContextMenu={onToggleAdminContextMenu}
-                  onToggleNavbar={onToggleNavbar}
-          />
+
           <VelocityTransitionGroup component="div" {...shadowAnimationProps}>
             { isNavbarVisible ?
               <NavShadow onClick={onToggleNavbar}/> : null }
@@ -165,6 +163,14 @@ class Main extends Component {
                onLogout={this.onLogout}
                onCloseClick={onToggleNavbar}
                onMenuItemClick={this.onMenuItemClick.bind(this)}
+          />
+
+          <TopBar title={topBarTitle}
+                  username={username}
+                  isAdminContextMenuVisible={isAdminContextMenuVisible}
+                  onLogout={this.onLogout}
+                  onToggleAdminContextMenu={onToggleAdminContextMenu}
+                  onToggleNavbar={onToggleNavbar}
           />
           
           <div className="tnm-content-wrapper">

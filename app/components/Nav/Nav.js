@@ -16,18 +16,15 @@ export default function Nav(props) {
     visible,
     username
   } = props;
-  
-  const visibleStyle = {
-    transform: 'translateX(0px)',
-    WebkitTransform: 'translateX(0px)',
-    MozTransform: 'translateX(0px)',
-    MsTransform: 'translateX(0px)'
+
+  let clazz = 'tnm-nav-wrapper';
+  if(visible) {
+    clazz += ' visible';
   }
   
   return (
-    <div className="tnm-nav-wrapper" style={visible ? visibleStyle : null}>
+    <div className={clazz}>
       <nav>
-        <Icon className="tnm-nav-close" name="close" onClick={props.onCloseClick}/>
         <NavLogo />
         <NavMenuItemDivider />
         <NavWelcome username={username} onLogout={props.onLogout} />

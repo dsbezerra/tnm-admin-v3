@@ -1,10 +1,12 @@
 import React from 'react';
 import _ from 'lodash';
 
+import VelocityComponent from 'velocity-react/velocity-component';
 import VelocityTransitionGroup from 'velocity-react/velocity-transition-group';
 
 import {
-  Button
+  Button,
+  Icon,
 } from '../UI';
 
 const itemAnimationProps = {
@@ -27,6 +29,7 @@ export default function ScraperBar(props) {
   const {
     scraper,
     running,
+    isExpanded
   } = props;
   
   let statusClass = 'tnm-scraper-status';
@@ -47,9 +50,13 @@ export default function ScraperBar(props) {
   else {
     statusClass += ' stopped';
   }
+
+  let clazz = 'tnm-scraper-bar';
+  if(isExpanded)
+    clazz += ' expanded';
   
   return (
-    <div className="tnm-scraper-bar">
+    <div className={clazz}>
       <div className="tnm-scraper-details">
         <div className="tnm-scraper-name">
           {scraper.name}
@@ -84,64 +91,60 @@ export default function ScraperBar(props) {
           }
         </VelocityTransitionGroup>
         
-        <VelocityTransitionGroup {...itemAnimationProps}>
-          {
-            (isRunning || isFinished) && running.stats ?
-            <div className="tnm-scraper-stats-notices">
-              
-              <div className="tnm-scraper-stats-item">
-                <div className="tnm-scraper-stats-header">
-                  LICITAÇÕES
-                </div>
+       
+        {
+          (isRunning || isFinished) && running.stats ?
+          <div className="tnm-scraper-stats-notices">
+            
+            <div className="tnm-scraper-stats-item">
+              <div className="tnm-scraper-stats-header">
+                ENCONTRADAS
               </div>
-              
-              <div className="tnm-scraper-stats-item">
-                <div className="tnm-scraper-stats-header">
-                  ENCONTRADAS
-               </div>
-               <div className="tnm-scraper-stats-value">
-                 {running.stats.totalBiddings}
-               </div>
-              </div>
-              
-              <div className="tnm-scraper-stats-item">
-                <div className="tnm-scraper-stats-header">
-                  NOVAS
-                </div>
-                <div className="tnm-scraper-stats-value">
-                  {running.stats.newBiddings}
-                </div>
-              </div>
-              <div className="tnm-scraper-stats-item">
-                <div className="tnm-scraper-stats-header">
-                 EXTRAÍDAS
-                </div>
-                <div className="tnm-scraper-stats-value">
-                  {running.stats.totalExtracted}
-                </div>
+              <div className="tnm-scraper-stats-value">
+                {running.stats.totalBiddings}
               </div>
             </div>
-            : null
-          }
-        </VelocityTransitionGroup>
+            
+            <div className="tnm-scraper-stats-item">
+              <div className="tnm-scraper-stats-header">
+                NOVAS
+              </div>
+              <div className="tnm-scraper-stats-value">
+                {running.stats.newBiddings}
+              </div>
+            </div>
+            <div className="tnm-scraper-stats-item">
+              <div className="tnm-scraper-stats-header">
+                EXTRAÍDAS
+              </div>
+              <div className="tnm-scraper-stats-value">
+                {running.stats.totalExtracted}
+              </div>
+            </div>
+          </div>
+          : null
+        }
+          
       </div>
 
+      { isRunning || isFinished ?
+        <Icon className={isExpanded ? 'tnm-expand-icon expanded' : 'tnm-expand-icon'} 
+              name="keyboard_arrow_down"
+              onClick={props.onExpand}
+        /> : null }
+        
       <div className="tnm-scraper-buttons">
         
         { isRunning && !isFinished ?
           <div>
-            <Button type="primary"
+            {/* TODO(diego): Enable thid once we have that functionality */}
+            {/*<Button type="primary"
                     color="red"
                     text="PARAR"
                     className="stop"
                     onClick={props.onStop}
-            />
-            <Button type="primary"
-                    text="EXPANDIR"
-                    className="expand"
-                    onClick={props.onExpand}
-            />
-          </div>:
+            />*/}
+          </div> :
 
           <div>
             <Button type="secondary"

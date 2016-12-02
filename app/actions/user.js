@@ -13,6 +13,7 @@ import {
   USERS_ALL_FILTER_CHANGE,
   USERS_ALL_FILTER_CLEAR,
   USERS_ALL_LIMIT_CHANGE,
+  USERS_ALL_PAGE_CHANGE,
 } from '../constants/ActionTypes';
 
 export function requestUsers() {
@@ -92,6 +93,13 @@ export function onAllLimitChange(limit) {
   return {
     type: USERS_ALL_LIMIT_CHANGE,
     limit,
+  }
+}
+
+export function onAllPageChange(dir) {
+  return {
+    type: USERS_ALL_PAGE_CHANGE,
+    dir,
   }
 }
 

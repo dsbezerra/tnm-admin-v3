@@ -3,7 +3,9 @@ import _ from 'lodash';
 
 import ActionItem from './ActionItem';
 
-import Header from '../UI/Header';
+import {
+  Header
+} from '../UI';
 
 function ActionList(props) {
 
@@ -14,7 +16,7 @@ function ActionList(props) {
                key={index}
                action={action}
                active={active === action.id}
-               onClick={props.onClick.bind(this, action)} />
+               onClick={props.onClick ? props.onClick.bind(this, action) : null} />
   });
   
   return (

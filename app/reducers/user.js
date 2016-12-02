@@ -11,6 +11,7 @@ import {
   USERS_ALL_FILTER_CHANGE,
   USERS_ALL_FILTER_CLEAR,
   USERS_ALL_LIMIT_CHANGE,
+  USERS_ALL_PAGE_CHANGE,
 } from '../constants/ActionTypes';
 
 const initialState = {
@@ -20,7 +21,8 @@ const initialState = {
     list: [],
     numUsers: 0,
   },
-  
+
+  currentPage: 0,
   list: [],
   numUsers: 0,
   isFetching: false,
@@ -125,6 +127,15 @@ const user = (state = initialState, action) => {
         ...state,
         limit: action.limit,
       }
+
+    case USERS_ALL_PAGE_CHANGE:
+    {
+      const currentPage = state.currentPage;
+      return {
+        ...state,
+        currentPage: currentPage + action.dir,
+      }
+    }
       
     default:
       return state;
