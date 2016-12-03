@@ -23,6 +23,9 @@ class InsertLocation extends Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      reset: false,
+    };
     this.onUpdateCity = this.onUpdateCity.bind(this);
     this.onUpdateState = this.onUpdateState.bind(this);
     this.onInsert = this.onInsert.bind(this);
@@ -59,6 +62,10 @@ class InsertLocation extends Component {
 
   onClear(event) {
     event.preventDefault();
+    const { reset } = this.state;
+    this.setState({
+      reset: !reset,
+    });
   }
 
   onUpdateCity(event) {
@@ -111,7 +118,7 @@ class InsertLocation extends Component {
       <div className="tnm-main-content">
         <Header text="Novo Local"/>
         <Divider className="section" />
-        <Form onSubmit={this.onInsert}>
+        <Form key={this.state.reset} onSubmit={this.onInsert}>
           <Fields num="two">
             <Field>
               <Label text="Cidade"/>
@@ -130,19 +137,16 @@ class InsertLocation extends Component {
           </Fields>
           
           <Fields num="two">
-            <Field>
-              <Button text="Confirmar"
-                      type="primary"
-                      buttonType="submit"
-                      disabled={isInserting}
-              />
-            </Field>
-
-            <Field>
-              <Button text="Limpar"
-                      onClick={this.onClear}
-              />
-            </Field>
+            
+            <Button text="Confirmar"
+                    type="dark"
+                    buttonType="submit"
+                    disabled={isInserting}
+            />
+            <Button text="Limpar"
+                    type="dark"
+                    onClick={this.onClear}
+            />
           </Fields>
         </Form>
       </div>
